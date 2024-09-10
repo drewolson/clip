@@ -57,4 +57,5 @@ $ gleam run -- --name "Drew" --age 42
 Person("Drew", 42)
 ```
 
-Further documentation can be found at <https://hexdocs.pm/clip>.
+Take a look at the
+[examples](https://github.com/drewolson/clip/tree/main/examples) for more information.
