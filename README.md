@@ -16,14 +16,14 @@ type Person {
 
 fn command() {
   clip.command(fn(name) { fn(age) { Person(name, age) } })
-  |> clip.opt(opt.new("name"))
-  |> clip.opt(opt.new("age") |> opt.int)
+  |> clip.opt(opt.new("name") |> opt.help("Your name"))
+  |> clip.opt(opt.new("age") |> opt.int |> opt.help("Your age"))
 }
 
 pub fn main() {
   let result =
     command()
-    |> clip.add_help("person", "create a person")
+    |> clip.add_help("person", "Create a person")
     |> clip.run(argv.load().arguments)
 
   case result {
@@ -37,7 +37,7 @@ pub fn main() {
 $ gleam run -- --help
    Compiled in 0.00s
     Running simple.main
-person -- create a person
+person -- Create a person
 
 Usage:
 
@@ -45,13 +45,13 @@ Usage:
 
 Options:
 
-  (--name NAME)
-  (--age AGE)
+  (--name NAME) Your name
+  (--age AGE)   Your age
   [--help,-h]   Print this help
 ```
 
 ```
-$ gleam run -- --name "Drew" --age 42
+$ gleam run -- --name Drew --age 42
    Compiled in 0.00s
     Running simple.main
 Person("Drew", 42)
