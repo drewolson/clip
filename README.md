@@ -33,8 +33,10 @@ pub fn main() {
 }
 ```
 
-```sh
+```
 $ gleam run -- --help
+   Compiled in 0.00s
+    Running simple.main
 person -- create a person
 
 Usage:
@@ -48,8 +50,10 @@ Options:
   [--help,-h]   Print this help
 ```
 
-```sh
+```
 $ gleam run -- --name "Drew" --age 42
+   Compiled in 0.00s
+    Running simple.main
 Person("Drew", 42)
 ```
 

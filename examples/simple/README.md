@@ -1,24 +1,25 @@
 # simple
 
-[![Package Version](https://img.shields.io/hexpm/v/simple)](https://hex.pm/packages/simple)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/simple/)
-
-```sh
-gleam add simple@1
 ```
-```gleam
-import simple
+$ gleam run -- --help
+   Compiled in 0.00s
+    Running simple.main
+person -- create a person
 
-pub fn main() {
-  // TODO: An example of the project in use
-}
+Usage:
+
+  person [OPTIONS]
+
+Options:
+
+  (--name NAME)
+  (--age AGE)
+  [--help,-h]   Print this help
 ```
 
-Further documentation can be found at <https://hexdocs.pm/simple>.
-
-## Development
-
-```sh
-gleam run   # Run the project
-gleam test  # Run the tests
+```
+$ gleam run -- --name "Drew" --age 42
+   Compiled in 0.00s
+    Running simple.main
+Person("Drew", 42)
 ```
