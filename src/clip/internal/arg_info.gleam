@@ -68,7 +68,7 @@ fn pos_str(p_info: PositionalInfo) -> String {
   let name = string.uppercase(p_info.name)
   let name = case p_info.repeat {
     NoRepeat -> name
-    _ -> ".." <> name
+    _ -> name <> "..."
   }
   name
 }

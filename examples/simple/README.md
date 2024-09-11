@@ -3,7 +3,7 @@
 ```
 $ gleam run -- --help
    Compiled in 0.00s
-    Running simple.main
+    Running cli.main
 person -- Create a person
 
 Usage:
@@ -20,6 +20,6 @@ Options:
 ```
 $ gleam run -- --name Drew --age 42
    Compiled in 0.00s
-    Running simple.main
+    Running cli.main
 Person("Drew", 42)
 ```
