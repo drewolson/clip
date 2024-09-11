@@ -59,6 +59,14 @@ pub fn try_map(arg: Arg(a), f: fn(a) -> Result(b, String)) -> Arg(b) {
   }
 }
 
+pub fn map(arg: Arg(a), f: fn(a) -> b) -> Arg(b) {
+  try_map(arg, fn(a) { Ok(f(a)) })
+}
+
+pub fn optional(arg: Arg(a)) -> Arg(Result(a, Nil)) {
+  arg |> map(Ok) |> default(Error(Nil))
+}
+
 pub fn default(arg: Arg(a), default: a) -> Arg(a) {
   case arg {
     Arg(name:, default: _, help:, try_map:) ->

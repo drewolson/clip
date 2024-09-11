@@ -43,11 +43,19 @@ pub fn try_map(opt: Opt(a), f: fn(a) -> Result(b, String)) -> Opt(b) {
   }
 }
 
+pub fn map(opt: Opt(a), f: fn(a) -> b) -> Opt(b) {
+  try_map(opt, fn(a) { Ok(f(a)) })
+}
+
 pub fn default(opt: Opt(a), default: a) -> Opt(a) {
   case opt {
     Opt(name:, short:, default: _, help:, try_map:) ->
       Opt(name:, short:, default: Some(default), help:, try_map:)
   }
+}
+
+pub fn optional(opt: Opt(a)) -> Opt(Result(a, Nil)) {
+  opt |> map(Ok) |> default(Error(Nil))
 }
 
 pub fn help(opt: Opt(a), help: String) -> Opt(a) {
