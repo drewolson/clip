@@ -162,6 +162,10 @@ fn run_subcommands(
   }
 }
 
+/// Build a command with subcommands and a default top-level command if no
+/// subcommand matches. This is an advanced use case, see the examples directory
+/// for more help.
+///
 pub fn subcommands_with_default(
   subcommands: List(#(String, Command(a))),
   default: Command(a),
@@ -174,10 +178,17 @@ pub fn subcommands_with_default(
   )
 }
 
+/// Build a command with subcommands. This is an advanced use case, see the
+/// examples directory for more help.
+///
 pub fn subcommands(subcommands: List(#(String, Command(a)))) -> Command(a) {
   subcommands_with_default(subcommands, fail("No subcommand provided"))
 }
 
+/// Add the help (`-h`, `--help`) flags to your program to display usage help
+/// to the user. The provided `name` and `description` will be used to generate
+/// the help text.
+///
 pub fn add_help(
   command: Command(a),
   name: String,
@@ -206,6 +217,9 @@ pub fn add_help(
   )
 }
 
+/// Run a command. Running a `Command(a)` will return either `Ok(a)` or an
+/// `Error(String)`. The `Error` value is intended to be printed to the user.
+///
 pub fn run(command: Command(a), args: List(String)) -> Result(a, String) {
   case command.f(args) {
     Ok(#(a, _)) -> Ok(a)
