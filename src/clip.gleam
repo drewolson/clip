@@ -11,10 +11,23 @@ pub opaque type Command(a) {
   Command(info: ArgInfo, f: ArgsFn(a))
 }
 
+/// The `pure` function takes a value `a` and produces a `Command` that, when /
+/// run, produces `a`. You shouldn't call this function directly, but rather use
+/// `clip.command`.
+///
+/// ```gleam
+///  clip.pure(1) |> clip.run(["whatever"]) |> string.inspect
+///
+///  // Ok(1)
+/// ```
+///
 pub fn pure(val: a) -> Command(a) {
   Command(info: arg_info.empty(), f: fn(args) { Ok(#(val, args)) })
 }
 
+/// Don't call this function directly. Rather, call `cli.opt`, `clip.flag`, or
+/// `clip.arg`.
+///
 pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
   Command(info: arg_info.merge(mf.info, ma.info), f: fn(args) {
     use #(f, args1) <- result.try(mf.f(args))
@@ -23,22 +36,76 @@ pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
   })
 }
 
+/// The `command` function is use to start building a parser. You provided a
+/// curried function and then provide arguments to be supplied to that function.
+///
+/// ```gleam
+/// clip.command(fn(a) { fn(b) { #(a, b) } })
+/// |> clip.opt(opt.new("first"))
+/// |> clip.opt(opt.new("second"))
+/// |> clip.run(["--first", "foo", "--second", "bar"])
+/// |> string.inspect
+///
+/// // Ok(#("foo", "bar"))
+/// ```
+///
 pub fn command(f: fn(a) -> b) -> Command(fn(a) -> b) {
   pure(f)
 }
 
+/// Creates a `Command` that always produces `Error(message)` when run.
+///
 pub fn fail(message: String) -> Command(a) {
   Command(info: arg_info.empty(), f: fn(_args) { Error(message) })
 }
 
+/// Parse an option built using the `clip/opt` module and provide it to a
+/// `Command` function build using `clip.command()`
+///
+/// ```gleam
+/// clip.command(fn(a) { a })
+/// |> clip.opt(opt.new("first"))
+/// |> clip.run(["--first", "foo"])
+/// |> string.inspect
+///
+/// // Ok("foo")
+/// ```
+///
 pub fn opt(command: Command(fn(a) -> b), opt: Opt(a)) -> Command(b) {
   apply(command, Command(info: opt.to_arg_info(opt), f: opt.run(opt, _)))
 }
 
+/// Parse the next positional argument built using the `clip/arg` module and
+/// provide it to a `Command` function build using `clip.command()`
+///
+/// ```gleam
+/// clip.command(fn(a) { a })
+/// |> clip.arg(arg.new("foo"))
+/// |> clip.run(["foo"])
+/// |> string.inspect
+///
+/// // Ok("foo")
+/// ```
+///
 pub fn arg(command: Command(fn(a) -> b), arg: Arg(a)) -> Command(b) {
   apply(command, Command(info: arg.to_arg_info(arg), f: arg.run(arg, _)))
 }
 
+/// Parse the next zero or more positional arguments built using the `clip/arg`
+/// module and provide them as a `List` to a `Command` function build using
+/// `clip.command()`. `arg_many` is greedy, parsing as many options as possible
+/// until parsing fails. If zero values are parsed successfuly, an empty
+/// `List` is provided.
+///
+/// ```gleam
+/// clip.command(fn(a) { a })
+/// |> clip.arg_many(arg.new("foo"))
+/// |> clip.run(["foo", "bar", "baz"])
+/// |> string.inspect
+///
+/// // Ok(["foo", "bar", "baz"])
+/// ```
+///
 pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
   apply(
     command,
@@ -46,6 +113,20 @@ pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
   )
 }
 
+/// Parse the next one or more positional arguments built using the `clip/arg`
+/// module and provide them as a `List` to a `Command` function build using
+/// `clip.command()`. `arg_many` is greedy, parsing as many options as possible
+/// until parsing fails. Parsing fails if zero values are parsed successfully.
+///
+/// ```gleam
+/// clip.command(fn(a) { a })
+/// |> clip.arg_many1(arg.new("foo"))
+/// |> clip.run(["foo", "bar", "baz"])
+/// |> string.inspect
+///
+/// // Ok(["foo", "bar", "baz"])
+/// ```
+///
 pub fn arg_many1(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
   apply(
     command,
@@ -53,6 +134,18 @@ pub fn arg_many1(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) 
   )
 }
 
+/// Parse a flag built using the `clip/flag` module and provide it to a
+/// `Command` function build using `clip.command()`
+///
+/// ```gleam
+/// clip.command(fn(a) { a })
+/// |> clip.flag(flag.new("foo"))
+/// |> clip.run(["--foo"])
+/// |> string.inspect
+///
+/// // Ok(True)
+/// ```
+///
 pub fn flag(command: Command(fn(Bool) -> b), flag: Flag) -> Command(b) {
   apply(command, Command(info: flag.to_arg_info(flag), f: flag.run(flag, _)))
 }
