@@ -1,3 +1,5 @@
+//// Functions for building `Arg`s. An `Arg` is a positional option.
+
 import clip/internal/aliases.{type Args, type FnResult}
 import clip/internal/arg_info.{
   type ArgInfo, type PositionalInfo, ArgInfo, Many1Repeat, ManyRepeat, NoRepeat,
@@ -31,10 +33,12 @@ fn pos_info(arg: Arg(a)) -> PositionalInfo {
   }
 }
 
+/// Used internally, not intended for direct usage.
 pub fn to_arg_info(arg: Arg(a)) -> ArgInfo {
   ArgInfo(..arg_info.empty(), positional: [pos_info(arg)])
 }
 
+/// Used internally, not intended for direct usage.
 pub fn to_arg_info_many(arg: Arg(a)) -> ArgInfo {
   ArgInfo(
     ..arg_info.empty(),
@@ -42,6 +46,7 @@ pub fn to_arg_info_many(arg: Arg(a)) -> ArgInfo {
   )
 }
 
+/// Used internally, not intended for direct usage.
 pub fn to_arg_info_many1(arg: Arg(a)) -> ArgInfo {
   ArgInfo(
     ..arg_info.empty(),
@@ -49,6 +54,20 @@ pub fn to_arg_info_many1(arg: Arg(a)) -> ArgInfo {
   )
 }
 
+/// Modify the value produced by an `Arg` in a way that may fail.
+///
+/// ```gleam
+/// arg.new("age")
+/// |> arg.try_map(fn(age_str) {
+///   case int.parse(age_str) {
+///     Ok(age) -> Ok(age)
+///     Error(Nil) -> Error("Unable to parse integer")
+///   }
+/// })
+/// ```
+///
+/// Note: `try_map` can change the type of an `Arg` and therefore clears any
+/// previously set default value.
 pub fn try_map(arg: Arg(a), f: fn(a) -> Result(b, String)) -> Arg(b) {
   case arg {
     Arg(name:, default: _, help:, try_map:) ->
@@ -59,14 +78,25 @@ pub fn try_map(arg: Arg(a), f: fn(a) -> Result(b, String)) -> Arg(b) {
   }
 }
 
+/// Modify the value produced by an `Arg` in a way that cannot fail.
+///
+/// ```gleam
+/// arg.new("name")
+/// |> arg.map(fn(name) { string.uppercase(name) })
+/// ```
+///
+/// Note: `try_map` can change the type of an `Arg` and therefore clears any
+/// previously set default value.
 pub fn map(arg: Arg(a), f: fn(a) -> b) -> Arg(b) {
   try_map(arg, fn(a) { Ok(f(a)) })
 }
 
+/// Transform an `Arg(a)` to an `Arg(Result(a, Nil)`, making it optional.
 pub fn optional(arg: Arg(a)) -> Arg(Result(a, Nil)) {
   arg |> map(Ok) |> default(Error(Nil))
 }
 
+/// Provide a default value for an `Arg` when it is not provided by the user.
 pub fn default(arg: Arg(a), default: a) -> Arg(a) {
   case arg {
     Arg(name:, default: _, help:, try_map:) ->
@@ -74,6 +104,7 @@ pub fn default(arg: Arg(a), default: a) -> Arg(a) {
   }
 }
 
+/// Add help text to an `Arg`.
 pub fn help(arg: Arg(a), help: String) -> Arg(a) {
   case arg {
     Arg(name:, default:, help: _, try_map:) ->
@@ -81,6 +112,15 @@ pub fn help(arg: Arg(a), help: String) -> Arg(a) {
   }
 }
 
+/// Modify an `Arg(String)` to produce an `Int`.
+///
+/// ```gleam
+/// arg.new("age")
+/// |> arg.int
+/// ```
+///
+/// Note: `int` changes the type of an `Arg` and therefore clears any
+/// previously set default value.
 pub fn int(arg: Arg(String)) -> Arg(Int) {
   arg
   |> try_map(fn(val) {
@@ -89,6 +129,15 @@ pub fn int(arg: Arg(String)) -> Arg(Int) {
   })
 }
 
+/// Modify an `Arg(String)` to produce a `Float`.
+///
+/// ```gleam
+/// arg.new("height")
+/// |> arg.float
+/// ```
+///
+/// Note: `float` changes the type of an `Arg` and therefore clears any
+/// previously set default value.
 pub fn float(arg: Arg(String)) -> Arg(Float) {
   arg
   |> try_map(fn(val) {
@@ -97,10 +146,15 @@ pub fn float(arg: Arg(String)) -> Arg(Float) {
   })
 }
 
+/// Create a new `Arg` with the provided name. New `Arg`s always initially
+/// produce a `String`, which is the unmodified value given by the user on the
+/// command line.
 pub fn new(name: String) -> Arg(String) {
   Arg(name:, default: None, help: None, try_map: Ok)
 }
 
+/// Run an `Arg(a)` against a list of arguments. Used internally by `clip`, not
+/// intended for direct usage.
 pub fn run(arg: Arg(a), args: Args) -> FnResult(a) {
   case args, arg.default {
     [head, ..rest], _ -> {
@@ -119,7 +173,7 @@ pub fn run(arg: Arg(a), args: Args) -> FnResult(a) {
   }
 }
 
-pub fn run_many_aux(acc: List(a), arg: Arg(a), args: Args) -> FnResult(List(a)) {
+fn run_many_aux(acc: List(a), arg: Arg(a), args: Args) -> FnResult(List(a)) {
   case args {
     [] -> Ok(#(list.reverse(acc), []))
     _ ->
@@ -130,10 +184,14 @@ pub fn run_many_aux(acc: List(a), arg: Arg(a), args: Args) -> FnResult(List(a)) 
   }
 }
 
+/// Run an `Arg(a)` against a list of arguments producing zero or more results.
+/// Used internally by `clip`, not intended for direct usage.
 pub fn run_many(arg: Arg(a), args: Args) -> FnResult(List(a)) {
   run_many_aux([], arg, args)
 }
 
+/// Run an `Arg(a)` against a list of arguments producing one or more results.
+/// Used internally by `clip`, not intended for direct usage.
 pub fn run_many1(arg: Arg(a), args: Args) -> FnResult(List(a)) {
   use #(vs, rest) <- result.try(run_many_aux([], arg, args))
   case vs {

@@ -1,3 +1,5 @@
+//// Functions for building `clip` `Command`s.
+
 import clip/arg.{type Arg}
 import clip/flag.{type Flag}
 import clip/internal/aliases.{type Args, type ArgsFn, type FnResult}
@@ -20,14 +22,12 @@ pub opaque type Command(a) {
 ///
 ///  // Ok(1)
 /// ```
-///
 pub fn pure(val: a) -> Command(a) {
   Command(info: arg_info.empty(), f: fn(args) { Ok(#(val, args)) })
 }
 
 /// Don't call this function directly. Rather, call `cli.opt`, `clip.flag`, or
 /// `clip.arg`.
-///
 pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
   Command(info: arg_info.merge(mf.info, ma.info), f: fn(args) {
     use #(f, args1) <- result.try(mf.f(args))
@@ -48,13 +48,11 @@ pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
 ///
 /// // Ok(#("foo", "bar"))
 /// ```
-///
 pub fn command(f: fn(a) -> b) -> Command(fn(a) -> b) {
   pure(f)
 }
 
 /// Creates a `Command` that always produces `Error(message)` when run.
-///
 pub fn fail(message: String) -> Command(a) {
   Command(info: arg_info.empty(), f: fn(_args) { Error(message) })
 }
@@ -70,7 +68,6 @@ pub fn fail(message: String) -> Command(a) {
 ///
 /// // Ok("foo")
 /// ```
-///
 pub fn opt(command: Command(fn(a) -> b), opt: Opt(a)) -> Command(b) {
   apply(command, Command(info: opt.to_arg_info(opt), f: opt.run(opt, _)))
 }
@@ -86,7 +83,6 @@ pub fn opt(command: Command(fn(a) -> b), opt: Opt(a)) -> Command(b) {
 ///
 /// // Ok("foo")
 /// ```
-///
 pub fn arg(command: Command(fn(a) -> b), arg: Arg(a)) -> Command(b) {
   apply(command, Command(info: arg.to_arg_info(arg), f: arg.run(arg, _)))
 }
@@ -105,7 +101,6 @@ pub fn arg(command: Command(fn(a) -> b), arg: Arg(a)) -> Command(b) {
 ///
 /// // Ok(["foo", "bar", "baz"])
 /// ```
-///
 pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
   apply(
     command,
@@ -126,7 +121,6 @@ pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
 ///
 /// // Ok(["foo", "bar", "baz"])
 /// ```
-///
 pub fn arg_many1(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
   apply(
     command,
@@ -145,7 +139,6 @@ pub fn arg_many1(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) 
 ///
 /// // Ok(True)
 /// ```
-///
 pub fn flag(command: Command(fn(Bool) -> b), flag: Flag) -> Command(b) {
   apply(command, Command(info: flag.to_arg_info(flag), f: flag.run(flag, _)))
 }
@@ -165,7 +158,6 @@ fn run_subcommands(
 /// Build a command with subcommands and a default top-level command if no
 /// subcommand matches. This is an advanced use case, see the examples directory
 /// for more help.
-///
 pub fn subcommands_with_default(
   subcommands: List(#(String, Command(a))),
   default: Command(a),
@@ -180,7 +172,6 @@ pub fn subcommands_with_default(
 
 /// Build a command with subcommands. This is an advanced use case, see the
 /// examples directory for more help.
-///
 pub fn subcommands(subcommands: List(#(String, Command(a)))) -> Command(a) {
   subcommands_with_default(subcommands, fail("No subcommand provided"))
 }
@@ -188,7 +179,6 @@ pub fn subcommands(subcommands: List(#(String, Command(a)))) -> Command(a) {
 /// Add the help (`-h`, `--help`) flags to your program to display usage help
 /// to the user. The provided `name` and `description` will be used to generate
 /// the help text.
-///
 pub fn add_help(
   command: Command(a),
   name: String,
@@ -219,7 +209,6 @@ pub fn add_help(
 
 /// Run a command. Running a `Command(a)` will return either `Ok(a)` or an
 /// `Error(String)`. The `Error` value is intended to be printed to the user.
-///
 pub fn run(command: Command(a), args: List(String)) -> Result(a, String) {
   case command.f(args) {
     Ok(#(a, _)) -> Ok(a)
