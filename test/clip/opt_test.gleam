@@ -7,12 +7,10 @@ import qcheck/generator
 import qcheck/qtest
 
 pub fn opt_test() {
-  let gen =
-    generator.return(fn(a) { fn(b) { #(a, b) } })
-    |> generator.apply(generator.string_non_empty())
-    |> generator.apply(generator.string_non_empty())
-
-  use #(name, value) <- qtest.given(gen)
+  use #(name, value) <- qtest.given(generator.tuple2(
+    generator.string_non_empty(),
+    generator.string_non_empty(),
+  ))
 
   let command =
     clip.command(fn(a) { a })
@@ -25,12 +23,10 @@ pub fn opt_test() {
 }
 
 pub fn try_map_test() {
-  let gen =
-    generator.return(fn(a) { fn(b) { #(a, b) } })
-    |> generator.apply(generator.string_non_empty())
-    |> generator.apply(generator.small_positive_or_zero_int())
-
-  use #(name, value) <- qtest.given(gen)
+  use #(name, value) <- qtest.given(generator.tuple2(
+    generator.string_non_empty(),
+    generator.small_positive_or_zero_int(),
+  ))
 
   let result =
     clip.command(fn(a) { a })
@@ -49,12 +45,10 @@ pub fn try_map_test() {
 }
 
 pub fn map_test() {
-  let gen =
-    generator.return(fn(a) { fn(b) { #(a, b) } })
-    |> generator.apply(generator.string_non_empty())
-    |> generator.apply(generator.string_non_empty())
-
-  use #(name, value) <- qtest.given(gen)
+  use #(name, value) <- qtest.given(generator.tuple2(
+    generator.string_non_empty(),
+    generator.string_non_empty(),
+  ))
 
   let result =
     clip.command(fn(a) { a })
@@ -68,12 +62,10 @@ pub fn map_test() {
 }
 
 pub fn optional_test() {
-  let gen =
-    generator.return(fn(a) { fn(b) { #(a, b) } })
-    |> generator.apply(generator.string_non_empty())
-    |> generator.apply(generator.string_non_empty())
-
-  use #(name, value) <- qtest.given(gen)
+  use #(name, value) <- qtest.given(generator.tuple2(
+    generator.string_non_empty(),
+    generator.string_non_empty(),
+  ))
 
   let command =
     clip.command(fn(a) { a })
@@ -86,13 +78,11 @@ pub fn optional_test() {
 }
 
 pub fn default_test() {
-  let gen =
-    generator.return(fn(a) { fn(b) { fn(c) { #(a, b, c) } } })
-    |> generator.apply(generator.string_non_empty())
-    |> generator.apply(generator.string_non_empty())
-    |> generator.apply(generator.string_non_empty())
-
-  use #(name, value, default) <- qtest.given(gen)
+  use #(name, value, default) <- qtest.given(generator.tuple3(
+    generator.string_non_empty(),
+    generator.string_non_empty(),
+    generator.string_non_empty(),
+  ))
 
   let command =
     clip.command(fn(a) { a })
@@ -105,12 +95,10 @@ pub fn default_test() {
 }
 
 pub fn int_test() {
-  let gen =
-    generator.return(fn(a) { fn(b) { #(a, b) } })
-    |> generator.apply(generator.string_non_empty())
-    |> generator.apply(generator.small_positive_or_zero_int())
-
-  use #(name, value) <- qtest.given(gen)
+  use #(name, value) <- qtest.given(generator.tuple2(
+    generator.string_non_empty(),
+    generator.small_positive_or_zero_int(),
+  ))
 
   let result =
     clip.command(fn(a) { a })
@@ -121,12 +109,10 @@ pub fn int_test() {
 }
 
 pub fn float_test() {
-  let gen =
-    generator.return(fn(a) { fn(b) { #(a, b) } })
-    |> generator.apply(generator.string_non_empty())
-    |> generator.apply(generator.float())
-
-  use #(name, value) <- qtest.given(gen)
+  use #(name, value) <- qtest.given(generator.tuple2(
+    generator.string_non_empty(),
+    generator.float(),
+  ))
 
   let result =
     clip.command(fn(a) { a })

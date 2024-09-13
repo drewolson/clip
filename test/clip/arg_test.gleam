@@ -66,12 +66,10 @@ pub fn optional_test() {
 }
 
 pub fn default_test() {
-  let gen =
-    generator.return(fn(a) { fn(b) { #(a, b) } })
-    |> generator.apply(generator.string())
-    |> generator.apply(generator.string())
-
-  use #(value, default) <- qtest.given(gen)
+  use #(value, default) <- qtest.given(generator.tuple2(
+    generator.string_non_empty(),
+    generator.string_non_empty(),
+  ))
 
   let command =
     clip.command(fn(a) { a })
