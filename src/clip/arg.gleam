@@ -85,7 +85,7 @@ pub fn try_map(arg: Arg(a), f: fn(a) -> Result(b, String)) -> Arg(b) {
 /// |> arg.map(fn(name) { string.uppercase(name) })
 /// ```
 ///
-/// Note: `try_map` can change the type of an `Arg` and therefore clears any
+/// Note: `map` can change the type of an `Arg` and therefore clears any
 /// previously set default value.
 pub fn map(arg: Arg(a), f: fn(a) -> b) -> Arg(b) {
   try_map(arg, fn(a) { Ok(f(a)) })

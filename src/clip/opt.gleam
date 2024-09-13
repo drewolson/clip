@@ -68,7 +68,7 @@ pub fn try_map(opt: Opt(a), f: fn(a) -> Result(b, String)) -> Opt(b) {
 /// |> opt.map(fn(name) { string.uppercase(name) })
 /// ```
 ///
-/// Note: `try_map` can change the type of an `Opt` and therefore clears any
+/// Note: `map` can change the type of an `Opt` and therefore clears any
 /// previously set default value.
 pub fn map(opt: Opt(a), f: fn(a) -> b) -> Opt(b) {
   try_map(opt, fn(a) { Ok(f(a)) })

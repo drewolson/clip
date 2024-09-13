@@ -1,4 +1,4 @@
-//// Functions for building `clip` `Command`s.
+//// Functions for building `Command`s.
 
 import clip/arg.{type Arg}
 import clip/flag.{type Flag}
