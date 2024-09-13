@@ -18,7 +18,7 @@ pub opaque type Command(a) {
 /// `clip.command`.
 ///
 /// ```gleam
-///  clip.pure(1) |> clip.run(["whatever"]) |> string.inspect
+///  clip.pure(1) |> clip.run(["whatever"])
 ///
 ///  // Ok(1)
 /// ```
@@ -44,7 +44,6 @@ pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
 /// |> clip.opt(opt.new("first"))
 /// |> clip.opt(opt.new("second"))
 /// |> clip.run(["--first", "foo", "--second", "bar"])
-/// |> string.inspect
 ///
 /// // Ok(#("foo", "bar"))
 /// ```
@@ -64,7 +63,6 @@ pub fn fail(message: String) -> Command(a) {
 /// clip.command(fn(a) { a })
 /// |> clip.opt(opt.new("first"))
 /// |> clip.run(["--first", "foo"])
-/// |> string.inspect
 ///
 /// // Ok("foo")
 /// ```
@@ -79,7 +77,6 @@ pub fn opt(command: Command(fn(a) -> b), opt: Opt(a)) -> Command(b) {
 /// clip.command(fn(a) { a })
 /// |> clip.arg(arg.new("foo"))
 /// |> clip.run(["foo"])
-/// |> string.inspect
 ///
 /// // Ok("foo")
 /// ```
@@ -97,7 +94,6 @@ pub fn arg(command: Command(fn(a) -> b), arg: Arg(a)) -> Command(b) {
 /// clip.command(fn(a) { a })
 /// |> clip.arg_many(arg.new("foo"))
 /// |> clip.run(["foo", "bar", "baz"])
-/// |> string.inspect
 ///
 /// // Ok(["foo", "bar", "baz"])
 /// ```
@@ -117,7 +113,6 @@ pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
 /// clip.command(fn(a) { a })
 /// |> clip.arg_many1(arg.new("foo"))
 /// |> clip.run(["foo", "bar", "baz"])
-/// |> string.inspect
 ///
 /// // Ok(["foo", "bar", "baz"])
 /// ```
@@ -135,7 +130,6 @@ pub fn arg_many1(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) 
 /// clip.command(fn(a) { a })
 /// |> clip.flag(flag.new("foo"))
 /// |> clip.run(["--foo"])
-/// |> string.inspect
 ///
 /// // Ok(True)
 /// ```
