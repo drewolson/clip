@@ -4,10 +4,10 @@ import gleam/float
 import gleam/int
 import gleam/string
 import qcheck/generator
-import qcheck/qtest
+import qcheck/qtest/util.{given}
 
 pub fn arg_test() {
-  use value <- qtest.given(generator.string())
+  use value <- given(generator.string())
 
   let command =
     clip.command(fn(a) { a })
@@ -20,7 +20,7 @@ pub fn arg_test() {
 }
 
 pub fn try_map_test() {
-  use i <- qtest.given(generator.small_positive_or_zero_int())
+  use i <- given(generator.small_positive_or_zero_int())
 
   let result =
     clip.command(fn(a) { a })
@@ -39,7 +39,7 @@ pub fn try_map_test() {
 }
 
 pub fn map_test() {
-  use value <- qtest.given(generator.string())
+  use value <- given(generator.string())
 
   let result =
     clip.command(fn(a) { a })
@@ -50,7 +50,7 @@ pub fn map_test() {
 }
 
 pub fn optional_test() {
-  use value <- qtest.given(generator.string())
+  use value <- given(generator.string())
 
   let a =
     clip.command(fn(a) { a })
@@ -66,7 +66,7 @@ pub fn optional_test() {
 }
 
 pub fn default_test() {
-  use #(value, default) <- qtest.given(generator.tuple2(
+  use #(value, default) <- given(generator.tuple2(
     generator.string_non_empty(),
     generator.string_non_empty(),
   ))
@@ -82,7 +82,7 @@ pub fn default_test() {
 }
 
 pub fn int_test() {
-  use i <- qtest.given(generator.small_positive_or_zero_int())
+  use i <- given(generator.small_positive_or_zero_int())
 
   let result =
     clip.command(fn(a) { a })
@@ -93,7 +93,7 @@ pub fn int_test() {
 }
 
 pub fn float_test() {
-  use i <- qtest.given(generator.float())
+  use i <- given(generator.float())
 
   let result =
     clip.command(fn(a) { a })

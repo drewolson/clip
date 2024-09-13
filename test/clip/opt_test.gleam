@@ -4,10 +4,10 @@ import gleam/float
 import gleam/int
 import gleam/string
 import qcheck/generator
-import qcheck/qtest
+import qcheck/qtest/util.{given}
 
 pub fn opt_test() {
-  use #(name, value) <- qtest.given(generator.tuple2(
+  use #(name, value) <- given(generator.tuple2(
     generator.string_non_empty(),
     generator.string_non_empty(),
   ))
@@ -23,7 +23,7 @@ pub fn opt_test() {
 }
 
 pub fn try_map_test() {
-  use #(name, value) <- qtest.given(generator.tuple2(
+  use #(name, value) <- given(generator.tuple2(
     generator.string_non_empty(),
     generator.small_positive_or_zero_int(),
   ))
@@ -45,7 +45,7 @@ pub fn try_map_test() {
 }
 
 pub fn map_test() {
-  use #(name, value) <- qtest.given(generator.tuple2(
+  use #(name, value) <- given(generator.tuple2(
     generator.string_non_empty(),
     generator.string_non_empty(),
   ))
@@ -62,7 +62,7 @@ pub fn map_test() {
 }
 
 pub fn optional_test() {
-  use #(name, value) <- qtest.given(generator.tuple2(
+  use #(name, value) <- given(generator.tuple2(
     generator.string_non_empty(),
     generator.string_non_empty(),
   ))
@@ -78,7 +78,7 @@ pub fn optional_test() {
 }
 
 pub fn default_test() {
-  use #(name, value, default) <- qtest.given(generator.tuple3(
+  use #(name, value, default) <- given(generator.tuple3(
     generator.string_non_empty(),
     generator.string_non_empty(),
     generator.string_non_empty(),
@@ -95,7 +95,7 @@ pub fn default_test() {
 }
 
 pub fn int_test() {
-  use #(name, value) <- qtest.given(generator.tuple2(
+  use #(name, value) <- given(generator.tuple2(
     generator.string_non_empty(),
     generator.small_positive_or_zero_int(),
   ))
@@ -109,7 +109,7 @@ pub fn int_test() {
 }
 
 pub fn float_test() {
-  use #(name, value) <- qtest.given(generator.tuple2(
+  use #(name, value) <- given(generator.tuple2(
     generator.string_non_empty(),
     generator.float(),
   ))
