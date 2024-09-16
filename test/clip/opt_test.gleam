@@ -5,7 +5,7 @@ import gleam/int
 import gleam/string
 import gleeunit/should
 import qcheck
-import qcheck/qtest/util.{given}
+import qcheck/util.{given}
 
 pub fn opt_test() {
   use #(name, value) <- given(qcheck.tuple2(

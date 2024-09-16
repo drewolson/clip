@@ -5,7 +5,7 @@ import gleam/int
 import gleam/string
 import gleeunit/should
 import qcheck
-import qcheck/qtest/util.{given}
+import qcheck/util.{given}
 
 pub fn arg_test() {
   use value <- given(qcheck.string_non_empty())

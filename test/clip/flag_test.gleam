@@ -2,7 +2,7 @@ import clip
 import clip/flag
 import gleeunit/should
 import qcheck
-import qcheck/qtest/util.{given}
+import qcheck/util.{given}
 
 pub fn flag_test() {
   use value <- given(qcheck.string_non_empty())
