@@ -1,11 +1,11 @@
 import clip
 import clip/flag
 import gleeunit/should
-import qcheck/generator
+import qcheck
 import qcheck/qtest/util.{given}
 
 pub fn flag_test() {
-  use value <- given(generator.string_non_empty())
+  use value <- given(qcheck.string_non_empty())
 
   let command =
     clip.command(fn(a) { a })
@@ -19,7 +19,7 @@ pub fn flag_test() {
 }
 
 pub fn short_test() {
-  use value <- given(generator.string_non_empty())
+  use value <- given(qcheck.string_non_empty())
 
   let command =
     clip.command(fn(a) { a })

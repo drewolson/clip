@@ -7,11 +7,11 @@ packages = [
   { name = "gleam_stdlib", version = "0.40.0", build_tools = ["gleam"], requirements = [], otp_app = "gleam_stdlib", source = "hex", outer_checksum = "86606B75A600BBD05E539EB59FABC6E307EEEA7B1E5865AFB6D980A93BCB2181" },
   { name = "gleeunit", version = "1.2.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleeunit", source = "hex", outer_checksum = "F7A7228925D3EE7D0813C922E062BFD6D7E9310F0BEE585D3A42F3307E3CFD13" },
   { name = "prng", version = "3.0.3", build_tools = ["gleam"], requirements = ["gleam_bitwise", "gleam_stdlib"], otp_app = "prng", source = "hex", outer_checksum = "53006736FE23A0F61828C95B505193E10905D8DB76E128F1642D3E571E08F589" },
-  { name = "qcheck", version = "0.0.3", build_tools = ["gleam"], requirements = ["exception", "gleam_stdlib", "prng"], otp_app = "qcheck", source = "hex", outer_checksum = "3C95C5CC43214EFD1C5120949B6426C36E9B63E7A09AABC96BFA92976DD6DE97" },
+  { name = "qcheck", version = "0.0.4", build_tools = ["gleam"], requirements = ["exception", "gleam_stdlib", "prng"], otp_app = "qcheck", source = "hex", outer_checksum = "8CC5D4C70FC9FD8EB3863E368576FF561E6D7EBFBE6A62C64B2928CC07A86756" },
 ]
 
 [requirements]
 exception = { version = ">= 2.0.0 and < 3.0.0" }
 gleam_stdlib = { version = ">= 0.34.0 and < 2.0.0" }
 gleeunit = { version = ">= 1.0.0 and < 2.0.0" }
-qcheck = { version = ">= 0.0.3 and < 1.0.0" }
+qcheck = { version = "0.0.4" }

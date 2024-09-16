@@ -1,15 +1,13 @@
 import exception
-import qcheck/generator.{type Generator}
-import qcheck/qtest
-import qcheck/qtest/config.{type Config}
+import qcheck.{type Config, type Generator}
 
 fn config() -> Config {
-  config.default()
-  |> config.with_test_count(1000)
+  qcheck.default_config()
+  |> qcheck.with_test_count(1000)
 }
 
 pub fn given(generator: Generator(a), f: fn(a) -> Nil) -> Nil {
-  qtest.run_result(config(), generator, fn(a) {
+  qcheck.run_result(config(), generator, fn(a) {
     exception.rescue(fn() { f(a) })
   })
 }

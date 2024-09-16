@@ -4,13 +4,13 @@ import gleam/float
 import gleam/int
 import gleam/string
 import gleeunit/should
-import qcheck/generator
+import qcheck
 import qcheck/qtest/util.{given}
 
 pub fn opt_test() {
-  use #(name, value) <- given(generator.tuple2(
-    generator.string_non_empty(),
-    generator.string_non_empty(),
+  use #(name, value) <- given(qcheck.tuple2(
+    qcheck.string_non_empty(),
+    qcheck.string_non_empty(),
   ))
 
   let command =
@@ -25,9 +25,9 @@ pub fn opt_test() {
 }
 
 pub fn try_map_test() {
-  use #(name, value) <- given(generator.tuple2(
-    generator.string_non_empty(),
-    generator.small_positive_or_zero_int(),
+  use #(name, value) <- given(qcheck.tuple2(
+    qcheck.string_non_empty(),
+    qcheck.small_positive_or_zero_int(),
   ))
 
   clip.command(fn(a) { a })
@@ -45,9 +45,9 @@ pub fn try_map_test() {
 }
 
 pub fn map_test() {
-  use #(name, value) <- given(generator.tuple2(
-    generator.string_non_empty(),
-    generator.string_non_empty(),
+  use #(name, value) <- given(qcheck.tuple2(
+    qcheck.string_non_empty(),
+    qcheck.string_non_empty(),
   ))
 
   clip.command(fn(a) { a })
@@ -60,9 +60,9 @@ pub fn map_test() {
 }
 
 pub fn optional_test() {
-  use #(name, value) <- given(generator.tuple2(
-    generator.string_non_empty(),
-    generator.string_non_empty(),
+  use #(name, value) <- given(qcheck.tuple2(
+    qcheck.string_non_empty(),
+    qcheck.string_non_empty(),
   ))
 
   let command =
@@ -77,10 +77,10 @@ pub fn optional_test() {
 }
 
 pub fn default_test() {
-  use #(name, value, default) <- given(generator.tuple3(
-    generator.string_non_empty(),
-    generator.string_non_empty(),
-    generator.string_non_empty(),
+  use #(name, value, default) <- given(qcheck.tuple3(
+    qcheck.string_non_empty(),
+    qcheck.string_non_empty(),
+    qcheck.string_non_empty(),
   ))
 
   let command =
@@ -95,9 +95,9 @@ pub fn default_test() {
 }
 
 pub fn int_test() {
-  use #(name, value) <- given(generator.tuple2(
-    generator.string_non_empty(),
-    generator.small_positive_or_zero_int(),
+  use #(name, value) <- given(qcheck.tuple2(
+    qcheck.string_non_empty(),
+    qcheck.small_positive_or_zero_int(),
   ))
 
   clip.command(fn(a) { a })
@@ -107,9 +107,9 @@ pub fn int_test() {
 }
 
 pub fn float_test() {
-  use #(name, value) <- given(generator.tuple2(
-    generator.string_non_empty(),
-    generator.float(),
+  use #(name, value) <- given(qcheck.tuple2(
+    qcheck.string_non_empty(),
+    qcheck.float(),
   ))
 
   clip.command(fn(a) { a })
