@@ -12,21 +12,21 @@ type Args {
 }
 
 fn foo_command() {
-  clip.command(fn(a) { fn(b) { Foo(a, b) } })
-  |> clip.opt(opt.new("a") |> opt.help("A"))
-  |> clip.opt(opt.new("b") |> opt.help("B") |> opt.int)
+  use a <- clip.opt(opt.new("a") |> opt.help("A"))
+  use b <- clip.opt(opt.new("b") |> opt.help("B") |> opt.int)
+  clip.pure(Foo(a:, b:))
   |> clip.add_help("subcommand foo", "Run foo")
 }
 
 fn bar_command() {
-  clip.command(fn(c) { Bar(c) })
-  |> clip.flag(flag.new("c") |> flag.help("C"))
+  use c <- clip.flag(flag.new("c") |> flag.help("C"))
+  clip.pure(Bar(c:))
   |> clip.add_help("subcommand bar", "Run bar")
 }
 
 fn baz_command() {
-  clip.command(fn(d) { TopLevel(d) })
-  |> clip.opt(opt.new("d") |> opt.help("D") |> opt.float)
+  use d <- clip.opt(opt.new("d") |> opt.help("D") |> opt.float)
+  clip.pure(TopLevel(d:))
   |> clip.add_help("top-level", "Run top-level")
 }
 

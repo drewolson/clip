@@ -11,13 +11,11 @@ type Args {
 }
 
 fn command() {
-  clip.command(fn(named) {
-    fn(flag) { fn(next) { fn(rest) { Args(named, flag, next, rest) } } }
-  })
-  |> clip.opt(opt.new("named") |> opt.help("Named"))
-  |> clip.flag(flag.new("flag") |> flag.help("Flag"))
-  |> clip.arg(arg.new("next") |> arg.help("Next"))
-  |> clip.arg_many(arg.new("rest") |> arg.help("Rest"))
+  use named <- clip.opt(opt.new("named") |> opt.help("Named"))
+  use flag <- clip.flag(flag.new("flag") |> flag.help("Flag"))
+  use next <- clip.arg(arg.new("next") |> arg.help("Next"))
+  use rest <- clip.arg_many(arg.new("rest") |> arg.help("Rest"))
+  clip.pure(Args(named:, flag:, next:, rest:))
 }
 
 pub fn main() {

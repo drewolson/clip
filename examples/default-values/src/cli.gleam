@@ -10,17 +10,17 @@ type Args {
 }
 
 fn command() {
-  clip.command(fn(first) { fn(second) { Args(first, second) } })
-  |> clip.opt(
+  use first <- clip.opt(
     opt.new("first")
     |> opt.help("First")
     |> opt.default("default value"),
   )
-  |> clip.arg(
+  use second <- clip.arg(
     arg.new("second")
     |> arg.help("Second")
     |> arg.optional,
   )
+  clip.pure(Args(first:, second:))
 }
 
 pub fn main() {

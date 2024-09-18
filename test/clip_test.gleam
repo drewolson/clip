@@ -12,11 +12,13 @@ pub fn main() {
 
 pub fn complex_command_test() {
   let result =
-    clip.command(fn(a) { fn(b) { fn(c) { fn(d) { #(a, b, c, d) } } } })
-    |> clip.opt(opt.new("a"))
-    |> clip.flag(flag.new("b"))
-    |> clip.arg(arg.new("c"))
-    |> clip.arg_many(arg.new("d"))
+    {
+      use a <- clip.opt(opt.new("a"))
+      use b <- clip.flag(flag.new("b"))
+      use c <- clip.arg(arg.new("c"))
+      use d <- clip.arg_many(arg.new("d"))
+      clip.pure(#(a, b, c, d))
+    }
     |> clip.run(["--a", "a", "--b", "c", "d", "e", "f"])
 
   result
@@ -28,11 +30,13 @@ pub fn opt_and_flag_order_does_not_matter_test() {
     [["--a", "a"], ["--b"], ["c", "d", "e", "f"]] |> list.shuffle |> list.concat
 
   let result =
-    clip.command(fn(a) { fn(b) { fn(c) { fn(d) { #(a, b, c, d) } } } })
-    |> clip.opt(opt.new("a"))
-    |> clip.flag(flag.new("b"))
-    |> clip.arg(arg.new("c"))
-    |> clip.arg_many(arg.new("d"))
+    {
+      use a <- clip.opt(opt.new("a"))
+      use b <- clip.flag(flag.new("b"))
+      use c <- clip.arg(arg.new("c"))
+      use d <- clip.arg_many(arg.new("d"))
+      clip.pure(#(a, b, c, d))
+    }
     |> clip.run(argv)
 
   result
@@ -42,9 +46,9 @@ pub fn opt_and_flag_order_does_not_matter_test() {
 pub fn subcommands_test() {
   let command =
     clip.subcommands([
-      #("a", clip.command(fn(a) { a }) |> clip.opt(opt.new("a"))),
-      #("b", clip.command(fn(a) { a }) |> clip.opt(opt.new("b"))),
-      #("c", clip.command(fn(a) { a }) |> clip.opt(opt.new("c"))),
+      #("a", clip.opt(opt.new("a"), clip.pure)),
+      #("b", clip.opt(opt.new("b"), clip.pure)),
+      #("c", clip.opt(opt.new("c"), clip.pure)),
     ])
 
   command
@@ -64,10 +68,10 @@ pub fn subcommands_with_default_test() {
   let command =
     clip.subcommands_with_default(
       [
-        #("a", clip.command(fn(a) { a }) |> clip.opt(opt.new("a"))),
-        #("b", clip.command(fn(a) { a }) |> clip.opt(opt.new("b"))),
+        #("a", clip.opt(opt.new("a"), clip.pure)),
+        #("b", clip.opt(opt.new("b"), clip.pure)),
       ],
-      clip.command(fn(a) { a }) |> clip.opt(opt.new("c")),
+      clip.opt(opt.new("c"), clip.pure),
     )
 
   command

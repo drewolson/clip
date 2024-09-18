@@ -44,15 +44,11 @@ fn fourth_opt() {
 }
 
 fn command() {
-  clip.command(fn(first) {
-    fn(second) {
-      fn(third) { fn(fourth) { Args(first, second, third, fourth) } }
-    }
-  })
-  |> clip.opt(first_opt())
-  |> clip.opt(second_opt())
-  |> clip.opt(third_opt())
-  |> clip.opt(fourth_opt())
+  use first <- clip.opt(first_opt())
+  use second <- clip.opt(second_opt())
+  use third <- clip.opt(third_opt())
+  use fourth <- clip.opt(fourth_opt())
+  clip.pure(Args(first:, second:, third:, fourth:))
 }
 
 pub fn main() {

@@ -28,12 +28,12 @@ pub fn pure(val: a) -> Command(a) {
 
 /// Don't call this function directly. Rather, call `cli.opt`, `clip.flag`, or
 /// `clip.arg`.
-pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
-  Command(info: arg_info.merge(mf.info, ma.info), f: fn(args) {
-    use #(f, args1) <- result.try(mf.f(args))
-    use #(a, args2) <- result.try(ma.f(args1))
-    Ok(#(f(a), args2))
-  })
+pub fn apply(ma: Command(a), mf: fn(a) -> Command(b)) -> Command(b) {
+  let f = fn(args) {
+    use #(ra, args1) <- result.try(ma.f(args))
+    mf(ra).f(args1)
+  }
+  Command(info: ma.info, f:)
 }
 
 /// The `command` function is use to start building a parser. You provided a
@@ -66,8 +66,8 @@ pub fn fail(message: String) -> Command(a) {
 ///
 /// // Ok("foo")
 /// ```
-pub fn opt(command: Command(fn(a) -> b), opt: Opt(a)) -> Command(b) {
-  apply(command, Command(info: opt.to_arg_info(opt), f: opt.run(opt, _)))
+pub fn opt(opt: Opt(a), next: fn(a) -> Command(b)) -> Command(b) {
+  apply(Command(info: opt.to_arg_info(opt), f: opt.run(opt, _)), next)
 }
 
 /// Parse the next positional argument built using the `clip/arg` module and
@@ -80,8 +80,8 @@ pub fn opt(command: Command(fn(a) -> b), opt: Opt(a)) -> Command(b) {
 ///
 /// // Ok("foo")
 /// ```
-pub fn arg(command: Command(fn(a) -> b), arg: Arg(a)) -> Command(b) {
-  apply(command, Command(info: arg.to_arg_info(arg), f: arg.run(arg, _)))
+pub fn arg(arg: Arg(a), next: fn(a) -> Command(b)) -> Command(b) {
+  apply(Command(info: arg.to_arg_info(arg), f: arg.run(arg, _)), next)
 }
 
 /// Parse the next zero or more positional arguments built using the `clip/arg`
@@ -97,11 +97,8 @@ pub fn arg(command: Command(fn(a) -> b), arg: Arg(a)) -> Command(b) {
 ///
 /// // Ok(["foo", "bar", "baz"])
 /// ```
-pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
-  apply(
-    command,
-    Command(info: arg.to_arg_info_many(arg), f: arg.run_many(arg, _)),
-  )
+pub fn arg_many(arg: Arg(a), next: fn(List(a)) -> Command(b)) -> Command(b) {
+  apply(Command(info: arg.to_arg_info_many(arg), f: arg.run_many(arg, _)), next)
 }
 
 /// Parse the next one or more positional arguments built using the `clip/arg`
@@ -116,10 +113,10 @@ pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
 ///
 /// // Ok(["foo", "bar", "baz"])
 /// ```
-pub fn arg_many1(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
+pub fn arg_many1(arg: Arg(a), next: fn(List(a)) -> Command(b)) -> Command(b) {
   apply(
-    command,
     Command(info: arg.to_arg_info_many1(arg), f: arg.run_many1(arg, _)),
+    next,
   )
 }
 
@@ -133,8 +130,8 @@ pub fn arg_many1(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) 
 ///
 /// // Ok(True)
 /// ```
-pub fn flag(command: Command(fn(Bool) -> b), flag: Flag) -> Command(b) {
-  apply(command, Command(info: flag.to_arg_info(flag), f: flag.run(flag, _)))
+pub fn flag(flag: Flag, next: fn(Bool) -> Command(a)) -> Command(a) {
+  apply(Command(info: flag.to_arg_info(flag), f: flag.run(flag, _)), next)
 }
 
 fn run_subcommands(
@@ -159,8 +156,8 @@ pub fn subcommands_with_default(
   let sub_names = list.map(subcommands, fn(p) { p.0 })
   let sub_arg_info = ArgInfo(..default.info, subcommands: sub_names)
   apply(
-    pure(fn(a) { a }),
     Command(info: sub_arg_info, f: run_subcommands(subcommands, default, _)),
+    fn(a) { pure(a) },
   )
 }
 

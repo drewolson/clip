@@ -10,9 +10,7 @@ import qcheck/util.{given}
 pub fn arg_test() {
   use value <- given(qcheck.string_non_empty())
 
-  let command =
-    clip.command(fn(a) { a })
-    |> clip.arg(arg.new("arg"))
+  let command = clip.arg(arg.new("arg"), clip.pure)
 
   clip.run(command, [value])
   |> should.equal(Ok(value))
@@ -24,15 +22,15 @@ pub fn arg_test() {
 pub fn try_map_test() {
   use i <- given(qcheck.small_positive_or_zero_int())
 
-  clip.command(fn(a) { a })
-  |> clip.arg(
+  clip.arg(
     arg.new("arg")
-    |> arg.try_map(fn(s) {
-      case int.parse(s) {
-        Ok(n) -> Ok(n)
-        Error(Nil) -> Error("Bad int")
-      }
-    }),
+      |> arg.try_map(fn(s) {
+        case int.parse(s) {
+          Ok(n) -> Ok(n)
+          Error(Nil) -> Error("Bad int")
+        }
+      }),
+    clip.pure,
   )
   |> clip.run([int.to_string(i)])
   |> should.equal(Ok(i))
@@ -40,9 +38,7 @@ pub fn try_map_test() {
 
 pub fn map_test() {
   use value <- given(qcheck.string_non_empty())
-
-  clip.command(fn(a) { a })
-  |> clip.arg(arg.new("arg") |> arg.map(string.uppercase))
+  clip.arg(arg.new("arg") |> arg.map(string.uppercase), clip.pure)
   |> clip.run([value])
   |> should.equal(Ok(string.uppercase(value)))
 }
@@ -50,9 +46,7 @@ pub fn map_test() {
 pub fn optional_test() {
   use value <- given(qcheck.string_non_empty())
 
-  let command =
-    clip.command(fn(a) { a })
-    |> clip.arg(arg.new("arg") |> arg.optional)
+  let command = clip.arg(arg.new("arg") |> arg.optional, clip.pure)
 
   clip.run(command, [value])
   |> should.equal(Ok(Ok(value)))
@@ -67,9 +61,7 @@ pub fn default_test() {
     qcheck.string_non_empty(),
   ))
 
-  let command =
-    clip.command(fn(a) { a })
-    |> clip.arg(arg.new("arg") |> arg.default(default))
+  let command = clip.arg(arg.new("arg") |> arg.default(default), clip.pure)
 
   clip.run(command, [value])
   |> should.equal(Ok(value))
@@ -81,8 +73,7 @@ pub fn default_test() {
 pub fn int_test() {
   use i <- given(qcheck.small_positive_or_zero_int())
 
-  clip.command(fn(a) { a })
-  |> clip.arg(arg.new("arg") |> arg.int)
+  clip.arg(arg.new("arg") |> arg.int, clip.pure)
   |> clip.run([int.to_string(i)])
   |> should.equal(Ok(i))
 }
@@ -90,8 +81,7 @@ pub fn int_test() {
 pub fn float_test() {
   use i <- given(qcheck.float())
 
-  clip.command(fn(a) { a })
-  |> clip.arg(arg.new("arg") |> arg.float)
+  clip.arg(arg.new("arg") |> arg.float, clip.pure)
   |> clip.run([float.to_string(i)])
   |> should.equal(Ok(i))
 }

@@ -9,9 +9,9 @@ type Person {
 }
 
 fn command() {
-  clip.command(fn(name) { fn(age) { Person(name, age) } })
-  |> clip.opt(opt.new("name") |> opt.help("Your name"))
-  |> clip.opt(opt.new("age") |> opt.int |> opt.help("Your age"))
+  use name <- clip.opt(opt.new("name") |> opt.help("Your name"))
+  use age <- clip.opt(opt.new("age") |> opt.int |> opt.help("Your age"))
+  clip.pure(Person(name:, age:))
 }
 
 pub fn main() {

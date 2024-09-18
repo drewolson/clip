@@ -21,6 +21,7 @@ Options:
   [--help,-h]   Print this help
 ```
 
+# TODO this doesn't work
 ```
 $ gleam run -- foo --help
    Compiled in 0.01s

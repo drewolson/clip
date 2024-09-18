@@ -7,9 +7,7 @@ import qcheck/util.{given}
 pub fn flag_test() {
   use value <- given(qcheck.string_non_empty())
 
-  let command =
-    clip.command(fn(a) { a })
-    |> clip.flag(flag.new(value))
+  let command = clip.flag(flag.new(value), clip.pure)
 
   clip.run(command, ["--" <> value])
   |> should.equal(Ok(True))
@@ -21,9 +19,7 @@ pub fn flag_test() {
 pub fn short_test() {
   use value <- given(qcheck.string_non_empty())
 
-  let command =
-    clip.command(fn(a) { a })
-    |> clip.flag(flag.new("flag") |> flag.short(value))
+  let command = clip.flag(flag.new("flag") |> flag.short(value), clip.pure)
 
   clip.run(command, ["-" <> value])
   |> should.equal(Ok(True))
