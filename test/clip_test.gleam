@@ -39,6 +39,17 @@ pub fn opt_and_flag_order_does_not_matter_test() {
   |> should.equal(Ok(#("a", True, "c", ["d", "e", "f"])))
 }
 
+pub fn arg_many_accepts_all_after_double_dash_test() {
+  let result =
+    clip.command(fn(a) { fn(b) { #(a, b) } })
+    |> clip.opt(opt.new("a"))
+    |> clip.arg_many(arg.new("b"))
+    |> clip.run(["--a", "a", "--", "--b", "c", "d", "e", "f"])
+
+  result
+  |> should.equal(Ok(#("a", ["--b", "c", "d", "e", "f"])))
+}
+
 pub fn subcommands_test() {
   let command =
     clip.subcommands([

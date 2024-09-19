@@ -153,14 +153,21 @@ pub fn new(name: String) -> Arg(String) {
   Arg(name:, default: None, help: None, try_map: Ok)
 }
 
-/// Run an `Arg(a)` against a list of arguments. Used internally by `clip`, not
-/// intended for direct usage.
-pub fn run(arg: Arg(a), args: Args) -> FnResult(a) {
+fn not_num(str: String) -> Bool {
+  let result =
+    int.parse(str) |> result.is_ok || float.parse(str) |> result.is_ok
+  !result
+}
+
+fn run_aux(strict: Bool, arg: Arg(a), args: Args) -> FnResult(a) {
   case args, arg.default {
+    ["--", ..rest], _ ->
+      run_aux(False, arg, rest)
+      |> result.map(fn(v) { #(v.0, ["--", ..v.1]) })
     [head, ..rest], _ -> {
-      case string.starts_with("head", "-") {
+      case strict && string.starts_with(head, "-") && not_num(head) {
         True ->
-          run(arg, rest)
+          run_aux(strict, arg, rest)
           |> result.map(fn(v) { #(v.0, [head, ..v.1]) })
         False -> {
           use a <- result.try(arg.try_map(head))
@@ -171,6 +178,12 @@ pub fn run(arg: Arg(a), args: Args) -> FnResult(a) {
     [], Some(v) -> Ok(#(v, []))
     [], None -> Error("missing required arg: " <> arg.name)
   }
+}
+
+/// Run an `Arg(a)` against a list of arguments. Used internally by `clip`, not
+/// intended for direct usage.
+pub fn run(arg: Arg(a), args: Args) -> FnResult(a) {
+  run_aux(True, arg, args)
 }
 
 fn run_many_aux(acc: List(a), arg: Arg(a), args: Args) -> FnResult(List(a)) {

@@ -5,10 +5,10 @@ import gleam/int
 import gleam/string
 import gleeunit/should
 import qcheck
-import qcheck/util.{given}
+import qcheck/util.{clip_string, given}
 
 pub fn arg_test() {
-  use value <- given(qcheck.string_non_empty())
+  use value <- given(clip_string())
 
   let command =
     clip.command(fn(a) { a })
@@ -39,7 +39,7 @@ pub fn try_map_test() {
 }
 
 pub fn map_test() {
-  use value <- given(qcheck.string_non_empty())
+  use value <- given(clip_string())
 
   clip.command(fn(a) { a })
   |> clip.arg(arg.new("arg") |> arg.map(string.uppercase))
@@ -48,7 +48,7 @@ pub fn map_test() {
 }
 
 pub fn optional_test() {
-  use value <- given(qcheck.string_non_empty())
+  use value <- given(clip_string())
 
   let command =
     clip.command(fn(a) { a })
@@ -62,10 +62,7 @@ pub fn optional_test() {
 }
 
 pub fn default_test() {
-  use #(value, default) <- given(qcheck.tuple2(
-    qcheck.string_non_empty(),
-    qcheck.string_non_empty(),
-  ))
+  use #(value, default) <- given(qcheck.tuple2(clip_string(), clip_string()))
 
   let command =
     clip.command(fn(a) { a })
