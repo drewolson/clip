@@ -80,6 +80,10 @@ pub fn opt(command: Command(fn(a) -> b), opt: Opt(a)) -> Command(b) {
 ///
 /// // Ok("foo")
 /// ```
+///
+/// `arg` will not attempt to parse options starting with `-` unless the
+/// special `--` value has been previously passed or the option is a negative
+/// integer or float.
 pub fn arg(command: Command(fn(a) -> b), arg: Arg(a)) -> Command(b) {
   apply(command, Command(info: arg.to_arg_info(arg), f: arg.run(arg, _)))
 }
@@ -97,6 +101,10 @@ pub fn arg(command: Command(fn(a) -> b), arg: Arg(a)) -> Command(b) {
 ///
 /// // Ok(["foo", "bar", "baz"])
 /// ```
+///
+/// `arg_many` will not attempt to parse options starting with `-` unless the
+/// special `--` value has been previously passed or the option is a negative
+/// integer or float.
 pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
   apply(
     command,
@@ -116,6 +124,10 @@ pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
 ///
 /// // Ok(["foo", "bar", "baz"])
 /// ```
+///
+/// `arg_many1` will not attempt to parse options starting with `-` unless the
+/// special `--` value has been previously passed or the option is a negative
+/// integer or float.
 pub fn arg_many1(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
   apply(
     command,
