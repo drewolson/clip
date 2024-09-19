@@ -5,6 +5,8 @@ import clip/opt
 import gleam/list
 import gleeunit
 import gleeunit/should
+import qcheck
+import qcheck/util.{clip_string, given}
 
 pub fn main() {
   gleeunit.main()
@@ -40,14 +42,19 @@ pub fn opt_and_flag_order_does_not_matter_test() {
 }
 
 pub fn arg_many_accepts_all_after_double_dash_test() {
+  use #(first, rest) <- given(qcheck.tuple2(
+    clip_string(),
+    qcheck.list_generic(qcheck.string_non_empty(), 2, 5),
+  ))
+
   let result =
     clip.command(fn(a) { fn(b) { #(a, b) } })
     |> clip.opt(opt.new("a"))
     |> clip.arg_many(arg.new("b"))
-    |> clip.run(["--a", "a", "--", "--b", "c", "d", "e", "f"])
+    |> clip.run(["--a", first, "--", ..rest])
 
   result
-  |> should.equal(Ok(#("a", ["--b", "c", "d", "e", "f"])))
+  |> should.equal(Ok(#(first, rest)))
 }
 
 pub fn subcommands_test() {
