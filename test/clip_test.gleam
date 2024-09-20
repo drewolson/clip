@@ -6,7 +6,7 @@ import gleam/list
 import gleeunit
 import gleeunit/should
 import qcheck
-import qcheck/util.{clip_string, given}
+import test_helper/qcheck_util
 
 pub fn main() {
   gleeunit.main()
@@ -42,8 +42,8 @@ pub fn opt_and_flag_order_does_not_matter_test() {
 }
 
 pub fn arg_many_accepts_all_after_double_dash_test() {
-  use #(first, rest) <- given(qcheck.tuple2(
-    clip_string(),
+  use #(first, rest) <- qcheck_util.given(qcheck.tuple2(
+    qcheck_util.clip_string(),
     qcheck.list_generic(qcheck.string_non_empty(), 2, 5),
   ))
 

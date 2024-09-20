@@ -5,10 +5,13 @@ import gleam/int
 import gleam/string
 import gleeunit/should
 import qcheck
-import qcheck/util.{clip_string, given}
+import test_helper/qcheck_util
 
 pub fn opt_test() {
-  use #(name, value) <- given(qcheck.tuple2(clip_string(), clip_string()))
+  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+  ))
 
   let command =
     clip.command(fn(a) { a })
@@ -22,8 +25,8 @@ pub fn opt_test() {
 }
 
 pub fn try_map_test() {
-  use #(name, value) <- given(qcheck.tuple2(
-    clip_string(),
+  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+    qcheck_util.clip_string(),
     qcheck.small_positive_or_zero_int(),
   ))
 
@@ -42,7 +45,10 @@ pub fn try_map_test() {
 }
 
 pub fn map_test() {
-  use #(name, value) <- given(qcheck.tuple2(clip_string(), clip_string()))
+  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+  ))
 
   clip.command(fn(a) { a })
   |> clip.opt(
@@ -54,7 +60,10 @@ pub fn map_test() {
 }
 
 pub fn optional_test() {
-  use #(name, value) <- given(qcheck.tuple2(clip_string(), clip_string()))
+  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+  ))
 
   let command =
     clip.command(fn(a) { a })
@@ -68,10 +77,10 @@ pub fn optional_test() {
 }
 
 pub fn default_test() {
-  use #(name, value, default) <- given(qcheck.tuple3(
-    clip_string(),
-    clip_string(),
-    clip_string(),
+  use #(name, value, default) <- qcheck_util.given(qcheck.tuple3(
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
   ))
 
   let command =
@@ -86,8 +95,8 @@ pub fn default_test() {
 }
 
 pub fn int_test() {
-  use #(name, value) <- given(qcheck.tuple2(
-    clip_string(),
+  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+    qcheck_util.clip_string(),
     qcheck.small_positive_or_zero_int(),
   ))
 
@@ -98,7 +107,10 @@ pub fn int_test() {
 }
 
 pub fn float_test() {
-  use #(name, value) <- given(qcheck.tuple2(clip_string(), qcheck.float()))
+  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+    qcheck_util.clip_string(),
+    qcheck.float(),
+  ))
 
   clip.command(fn(a) { a })
   |> clip.opt(opt.new(name) |> opt.float)

@@ -63,35 +63,35 @@ Person("Drew", 42)
 
 ## Using `clip`
 
-`clip` is an "applicative style" options parser. To use `clip`, we follow these
+`clip` is an "applicative style" options parser. To use `clip`, follow these
 steps:
 
-1. First, we invoke `clip.command`, providing a function to be called with our
+1. First, invoke `clip.command` providing a function to be called with your
    parsed options. This function needs to be provided in a curried style,
    meaning a two argument function looks like `fn(a) { fn(b) { do_stuff(a, b) }
    }`.
-2. We use the `|>` operator along with `clip.opt`, `clip.flag`, and `clip.arg`
-   to parse our command line arguments and provide them as parameters to the
-   function given to `clip.command`.
-3. We use `clip.add_help` to generate help text for our command. The user can
-   view this help text via the `--help,-h` flag.
-4. Finally, we run our parser with `clip.run`, giving it the command we have
-   built and the arguments to parse. We recommend using the `argv` library to
-   access these arguments for both erlang and javascript.
+2. Next, use the `|>` operator along with `clip.opt`, `clip.flag`, and
+   `clip.arg` to parse command line arguments and provide them as parameters to
+   the function given to `clip.command`.
+3. Optionally use `clip.add_help` to generate help text for your command. The
+   user can view this help text via the `--help,-h` flag.
+4. Finally, run your parser with `clip.run`, giving it the command you have
+   built and the list arguments to parse. I recommend using the `argv` library
+   to access these arguments from both erlang and javascript.
 
 ## Types of Options
 
 `clip` provides three types of options:
 
 1. An `Option` is a named option with a value, like `--name "Drew"`. You create
-   these with the `clip/opt` module and add them to your command with the
+   `Option`s with the `clip/opt` module and add them to your command with the
    `clip.opt` function.
-2. A `Flag` is an option without a value, like `--verbose`. If provided, it
-   produces `True`, if not provided it produces `False`. You create these with
+2. A `Flag` is a named option without a value, like `--verbose`. If provided, it
+   produces `True`, if not provided it produces `False`. You create `Flag`s with
    the `clip/flag` module and add them to your command with the `clip.flag`
    function.
 3. An `Argument` is a positional value passed to your command. You create
-   these with the `clip/arg` module and add them to your command with the
+   `Argument`s with the `clip/arg` module and add them to your command with the
    `clip.arg`, `clip.arg_many`, and `clip.arg_many1` functions.
 
 Take a look at the

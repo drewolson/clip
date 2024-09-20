@@ -13,21 +13,24 @@ pub opaque type Command(a) {
   Command(info: ArgInfo, f: ArgsFn(a))
 }
 
-/// The `pure` function takes a value `a` and produces a `Command` that, when /
-/// run, produces `a`. You shouldn't call this function directly, but rather use
-/// `clip.command`.
+/// The `return` function takes a value `val` and produces a `Command` that, when
+/// run, produces `val`. You should only call this function directly when your
+/// command doesn't require any arguments. Otherwise, use `clip.command`.
 ///
 /// ```gleam
-///  clip.pure(1) |> clip.run(["whatever"])
+///  clip.return(1) |> clip.run(["whatever"])
 ///
 ///  // Ok(1)
 /// ```
-pub fn pure(val: a) -> Command(a) {
+///
+/// See the [subcommand example](https://github.com/drewolson/clip/tree/main/examples/subcommand)
+/// for idiomatic usage of `return`.
+pub fn return(val: a) -> Command(a) {
   Command(info: arg_info.empty(), f: fn(args) { Ok(#(val, args)) })
 }
 
-/// Don't call this function directly. Rather, call `cli.opt`, `clip.flag`, or
-/// `clip.arg`.
+/// Don't call this function directly. Rather, call `cli.opt`, `clip.flag`,
+/// `clip.arg`, `clip.arg_many`, or `clip.arg_many1`.
 pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
   Command(info: arg_info.merge(mf.info, ma.info), f: fn(args) {
     use #(f, args1) <- result.try(mf.f(args))
@@ -36,7 +39,7 @@ pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
   })
 }
 
-/// The `command` function is use to start building a parser. You provided a
+/// The `command` function is use to start building a parser. You provide a
 /// curried function and then provide arguments to be supplied to that function.
 ///
 /// ```gleam
@@ -48,7 +51,7 @@ pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
 /// // Ok(#("foo", "bar"))
 /// ```
 pub fn command(f: fn(a) -> b) -> Command(fn(a) -> b) {
-  pure(f)
+  return(f)
 }
 
 /// Creates a `Command` that always produces `Error(message)` when run.
@@ -171,7 +174,7 @@ pub fn subcommands_with_default(
   let sub_names = list.map(subcommands, fn(p) { p.0 })
   let sub_arg_info = ArgInfo(..default.info, subcommands: sub_names)
   apply(
-    pure(fn(a) { a }),
+    return(fn(a) { a }),
     Command(info: sub_arg_info, f: run_subcommands(subcommands, default, _)),
   )
 }

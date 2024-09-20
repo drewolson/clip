@@ -2,7 +2,7 @@
 
 ```
 $ gleam run -- --help
-   Compiled in 0.01s
+   Compiled in 0.00s
     Running cli.main
 subcommand -- Run a subcommand
 
@@ -15,6 +15,7 @@ Commands:
   foo
   bar
   baz
+  qux
 
 Options:
 
@@ -57,4 +58,11 @@ $ gleam run -- baz --d 1.23
    Compiled in 0.01s
     Running cli.main
 Baz(1.23)
+```
+
+```
+$ gleam run -- qux
+   Compiled in 0.00s
+    Running cli.main
+Qux
 ```

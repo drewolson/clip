@@ -4,7 +4,7 @@ import qcheck.{type Config, type Generator}
 
 pub fn clip_string() -> Generator(String) {
   qcheck.string_non_empty()
-  |> qcheck.map(fn(s) { string.replace(s, each: "-", with: "a") })
+  |> qcheck.map(string.replace(_, each: "-", with: "a"))
 }
 
 fn config() -> Config {

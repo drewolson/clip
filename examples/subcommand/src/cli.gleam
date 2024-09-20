@@ -9,6 +9,7 @@ type Args {
   Foo(a: String, b: Int)
   Bar(c: Bool)
   Baz(d: Float)
+  Qux
 }
 
 fn foo_command() {
@@ -30,11 +31,17 @@ fn baz_command() {
   |> clip.add_help("subcommand baz", "Run baz")
 }
 
+fn qux_command() {
+  clip.return(Qux)
+  |> clip.add_help("subcommand qux", "Run qux")
+}
+
 fn command() {
   clip.subcommands([
     #("foo", foo_command()),
     #("bar", bar_command()),
     #("baz", baz_command()),
+    #("qux", qux_command()),
   ])
 }
 
