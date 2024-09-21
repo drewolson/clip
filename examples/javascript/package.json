@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "gleam build && esbuild cli.mjs --bundle --outdir=dist"
+    "build": "gleam build && esbuild ./priv/cli.mjs --bundle --outdir=dist"
   },
   "dependencies": {
     "esbuild": "^0.23.1"
