@@ -19,7 +19,12 @@ type Person {
 }
 
 fn command() {
-  clip.command(fn(name) { fn(age) { Person(name, age) } })
+  clip.command({
+    use name <- clip.param
+    use age <- clip.param
+
+    Person(name, age)
+  })
   |> clip.opt(opt.new("name") |> opt.help("Your name"))
   |> clip.opt(opt.new("age") |> opt.int |> opt.help("Your age"))
 }
@@ -67,10 +72,10 @@ Person("Drew", 42)
 steps:
 
 1. First, invoke `clip.command` providing a function to be called with your
-   parsed options. This function needs to be provided in a curried style,
-   meaning a two argument function looks like `fn(a) { fn(b) { do_stuff(a, b) }
-   }`. Alternatively, you can use the
+   parsed options. This function can be built using the
    [param syntax](https://github.com/drewolson/clip/tree/main/examples/param-syntax).
+   Alternatively, you can directly provide a curried function, meaning a two argument
+   function looks like `fn(a) { fn(b) { do_stuff(a, b) } }`.
 2. Next, use the `|>` operator along with `clip.opt`, `clip.flag`, and
    `clip.arg` to parse command line arguments and provide them as parameters to
    the function given to `clip.command`.
