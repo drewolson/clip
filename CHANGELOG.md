@@ -1,3 +1,8 @@
+# 0.4.0
+
+* Add `clip.param` to provide an alternative syntax for building curried
+  functions.
+
 # 0.3.0
 
 * Rename `clip.pure` to `clip.return` for consistency with the gleam ecosystem.

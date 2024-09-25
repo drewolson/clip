@@ -29,6 +29,33 @@ pub fn return(val: a) -> Command(a) {
   Command(info: arg_info.empty(), f: fn(args) { Ok(#(val, args)) })
 }
 
+/// The `param` function provides an altnerative syntax for building curried
+/// functions. The following two code blocks are equivalent:
+///
+/// ```gleam
+/// fn(a) {
+///   fn(b) {
+///     thing(a, b)
+///   }
+/// }
+/// ```
+///
+/// ```gleam
+/// {
+///   use a <- clip.param
+///   use b <- clip.param
+///
+///   thing(a, b)
+/// }
+/// ```
+///
+/// You can use either style when calling `clip.command`.
+/// See the [param syntax example](https://github.com/drewolson/clip/tree/main/examples/param-syntax)
+/// for more details.
+pub fn param(f: fn(a) -> b) -> fn(a) -> b {
+  f
+}
+
 /// Don't call this function directly. Rather, call `cli.opt`, `clip.flag`,
 /// `clip.arg`, `clip.arg_many`, or `clip.arg_many1`.
 pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
