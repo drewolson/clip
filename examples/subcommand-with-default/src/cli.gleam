@@ -45,6 +45,6 @@ pub fn main() {
 
   case result {
     Error(e) -> io.println_error(e)
-    Ok(person) -> person |> string.inspect |> io.println
+    Ok(args) -> args |> string.inspect |> io.println
   }
 }
