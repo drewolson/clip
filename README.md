@@ -69,7 +69,8 @@ steps:
 1. First, invoke `clip.command` providing a function to be called with your
    parsed options. This function needs to be provided in a curried style,
    meaning a two argument function looks like `fn(a) { fn(b) { do_stuff(a, b) }
-   }`.
+   }`. Alternatively, you can use the
+   [param syntax](https://github.com/drewolson/clip/tree/main/examples/param-syntax).
 2. Next, use the `|>` operator along with `clip.opt`, `clip.flag`, and
    `clip.arg` to parse command line arguments and provide them as parameters to
    the function given to `clip.command`.
