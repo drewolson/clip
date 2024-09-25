@@ -29,7 +29,7 @@ pub fn return(val: a) -> Command(a) {
   Command(info: arg_info.empty(), f: fn(args) { Ok(#(val, args)) })
 }
 
-/// The `param` function provides an altenrative syntax for building curried
+/// The `param` function provides an alternative syntax for building curried
 /// functions. The following two code blocks are equivalent:
 ///
 /// ```gleam
