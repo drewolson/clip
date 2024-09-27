@@ -1,3 +1,7 @@
+# Unreleased
+
+* Idiomatic help text for `arg_many()` (thanks [@seschwar](https://github.com/seschwar)).
+
 # 0.4.0
 
 * Add `clip.param` to provide an alternative syntax for building curried
