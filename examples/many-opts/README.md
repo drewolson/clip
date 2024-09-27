@@ -8,12 +8,12 @@ many-opts -- Provide many options
 
 Usage:
 
-  many-opts [OPTIONS] NEXT REST...
+  many-opts [OPTIONS] NEXT [REST...]
 
 Arguments:
 
   NEXT                  Next
-  REST...               Rest (zero or more)
+  [REST...]             Rest (zero or more)
 
 Options:
 
