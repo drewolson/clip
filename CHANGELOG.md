@@ -1,4 +1,4 @@
-# Unreleased
+# 0.4.1
 
 * Idiomatic help text for `arg_many()` (thanks [@seschwar](https://github.com/seschwar)).
 
