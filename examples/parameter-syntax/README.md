@@ -4,11 +4,11 @@
 $ gleam run -- --help
    Compiled in 0.01s
     Running cli.main
-param-syntax -- Create a person
+parameter-syntax -- Create a person
 
 Usage:
 
-  param-syntax [OPTIONS]
+  parameter-syntax [OPTIONS]
 
 Options:
 

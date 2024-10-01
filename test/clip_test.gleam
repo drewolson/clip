@@ -61,13 +61,13 @@ Options:
   |> should.equal(Error(expected))
 }
 
-pub fn param_command_test() {
+pub fn parameter_command_test() {
   let result =
     clip.command({
-      use a <- clip.param
-      use b <- clip.param
-      use c <- clip.param
-      use d <- clip.param
+      use a <- clip.parameter
+      use b <- clip.parameter
+      use c <- clip.parameter
+      use d <- clip.parameter
       #(a, b, c, d)
     })
     |> clip.opt(opt.new("a"))

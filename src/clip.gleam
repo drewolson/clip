@@ -29,7 +29,7 @@ pub fn return(val: a) -> Command(a) {
   Command(info: arg_info.empty(), f: fn(args) { Ok(#(val, args)) })
 }
 
-/// The `param` function provides an alternative syntax for building curried
+/// The `parameter` function provides an alternative syntax for building curried
 /// functions. The following two code blocks are equivalent:
 ///
 /// ```gleam
@@ -42,17 +42,17 @@ pub fn return(val: a) -> Command(a) {
 ///
 /// ```gleam
 /// {
-///   use a <- clip.param
-///   use b <- clip.param
+///   use a <- clip.parameter
+///   use b <- clip.parameter
 ///
 ///   thing(a, b)
 /// }
 /// ```
 ///
-/// You can use either style when calling `clip.command`.
-/// See the [param syntax example](https://github.com/drewolson/clip/tree/main/examples/param-syntax)
+/// You can use either style when calling `clip.command`. See the
+/// [parameter syntax example](https://github.com/drewolson/clip/tree/main/examples/parameter-syntax)
 /// for more details.
-pub fn param(f: fn(a) -> b) -> fn(a) -> b {
+pub fn parameter(f: fn(a) -> b) -> fn(a) -> b {
   f
 }
 

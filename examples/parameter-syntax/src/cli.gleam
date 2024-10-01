@@ -10,8 +10,8 @@ type Person {
 
 fn command() {
   clip.command({
-    use name <- clip.param
-    use age <- clip.param
+    use name <- clip.parameter
+    use age <- clip.parameter
 
     Person(name, age)
   })
@@ -22,7 +22,7 @@ fn command() {
 pub fn main() {
   let result =
     command()
-    |> clip.add_help("param-syntax", "Create a person")
+    |> clip.add_help("parameter-syntax", "Create a person")
     |> clip.run(argv.load().arguments)
 
   case result {

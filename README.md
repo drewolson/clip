@@ -20,8 +20,8 @@ type Person {
 
 fn command() {
   clip.command({
-    use name <- clip.param
-    use age <- clip.param
+    use name <- clip.parameter
+    use age <- clip.parameter
 
     Person(name, age)
   })
@@ -73,7 +73,7 @@ steps:
 
 1. First, invoke `clip.command` providing a function to be called with your
    parsed options. This function can be built using the
-   [param syntax](https://github.com/drewolson/clip/tree/main/examples/param-syntax).
+   [parameter syntax](https://github.com/drewolson/clip/tree/main/examples/parameter-syntax).
    Alternatively, you can directly provide a curried function, meaning a two argument
    function looks like `fn(a) { fn(b) { do_stuff(a, b) } }`.
 2. Next, use the `|>` operator along with `clip.opt`, `clip.flag`, and
