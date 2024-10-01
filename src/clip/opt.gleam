@@ -1,8 +1,8 @@
 //// Functions for building `Opt`s. An `Opt` is a named option with a
 //// value, such as `--name "Drew"`
 
+import clip/arg_info.{type ArgInfo, ArgInfo, NamedInfo}
 import clip/internal/aliases.{type Args, type FnResult}
-import clip/internal/arg_info.{type ArgInfo, ArgInfo, NamedInfo}
 import gleam/float
 import gleam/int
 import gleam/option.{type Option, None, Some}

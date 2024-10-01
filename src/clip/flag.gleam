@@ -2,8 +2,8 @@
 //// associated value, such as `--debug`. A `Flag` produces `True` when present
 //// and `False` when not present.
 
+import clip/arg_info.{type ArgInfo, ArgInfo, FlagInfo}
 import clip/internal/aliases.{type Args, type FnResult}
-import clip/internal/arg_info.{type ArgInfo, ArgInfo, FlagInfo}
 import gleam/option.{type Option, None, Some}
 import gleam/result
 

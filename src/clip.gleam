@@ -1,9 +1,9 @@
-//// Functions for building `Command`s.
+//// Functions for building and running `Command`s.
 
 import clip/arg.{type Arg}
+import clip/arg_info.{type ArgInfo, ArgInfo, FlagInfo}
 import clip/flag.{type Flag}
 import clip/internal/aliases.{type Args, type ArgsFn, type FnResult}
-import clip/internal/arg_info.{type ArgInfo, ArgInfo, FlagInfo}
 import clip/opt.{type Opt}
 import gleam/list
 import gleam/option.{Some}
@@ -213,12 +213,13 @@ pub fn subcommands(subcommands: List(#(String, Command(a)))) -> Command(a) {
 }
 
 /// Add the help (`-h`, `--help`) flags to your program to display usage help
-/// to the user. The provided `name` and `description` will be used to generate
-/// the help text.
-pub fn add_help(
+/// to the user. The provided function will be called with your `Command`'s
+/// `ArgInfo` and should produce a `String` to be displayed to the user. See
+/// `arg_info.help_text` for an example of generating a user-facing `String`
+/// from `ArgInfo`.
+pub fn add_custom_help(
   command: Command(a),
-  name: String,
-  description: String,
+  f: fn(ArgInfo) -> String,
 ) -> Command(a) {
   let help_info =
     ArgInfo(
@@ -232,15 +233,22 @@ pub fn add_help(
     f: fn(args) {
       case args {
         ["-h", ..] | ["--help", ..] ->
-          Error(arg_info.help_text(
-            arg_info.merge(command.info, help_info),
-            name,
-            description,
-          ))
+          Error(f(arg_info.merge(command.info, help_info)))
         other -> command.f(other)
       }
     },
   )
+}
+
+/// Add the help (`-h`, `--help`) flags to your program to display usage help
+/// to the user. The provided `name` and `description` will be used to generate
+/// the help text.
+pub fn add_help(
+  command: Command(a),
+  name: String,
+  description: String,
+) -> Command(a) {
+  add_custom_help(command, arg_info.help_text(_, name, description))
 }
 
 /// Run a command. Running a `Command(a)` will return either `Ok(a)` or an

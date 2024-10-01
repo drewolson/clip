@@ -1,10 +1,10 @@
 //// Functions for building `Arg`s. An `Arg` is a positional option.
 
-import clip/internal/aliases.{type Args, type FnResult}
-import clip/internal/arg_info.{
+import clip/arg_info.{
   type ArgInfo, type PositionalInfo, ArgInfo, Many1Repeat, ManyRepeat, NoRepeat,
   PositionalInfo,
 }
+import clip/internal/aliases.{type Args, type FnResult}
 import gleam/float
 import gleam/int
 import gleam/list

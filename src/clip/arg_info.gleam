@@ -40,6 +40,19 @@ pub type ArgInfo {
   )
 }
 
+pub fn empty() -> ArgInfo {
+  ArgInfo(named: [], positional: [], flags: [], subcommands: [])
+}
+
+pub fn merge(a: ArgInfo, b: ArgInfo) -> ArgInfo {
+  ArgInfo(
+    named: list.append(a.named, b.named),
+    positional: list.append(a.positional, b.positional),
+    flags: list.append(a.flags, b.flags),
+    subcommands: list.append(a.subcommands, b.subcommands),
+  )
+}
+
 fn named_str(n_info: NamedInfo) -> String {
   let long_name = "--" <> n_info.name
   let short_name = option.map(n_info.short, fn(s) { "-" <> s })
@@ -72,19 +85,6 @@ fn pos_str(p_info: PositionalInfo) -> String {
     Many1Repeat -> name <> "..."
   }
   name
-}
-
-pub fn empty() -> ArgInfo {
-  ArgInfo(named: [], positional: [], flags: [], subcommands: [])
-}
-
-pub fn merge(a: ArgInfo, b: ArgInfo) -> ArgInfo {
-  ArgInfo(
-    named: list.append(a.named, b.named),
-    positional: list.append(a.positional, b.positional),
-    flags: list.append(a.flags, b.flags),
-    subcommands: list.append(a.subcommands, b.subcommands),
-  )
 }
 
 pub fn help_text(info: ArgInfo, name: String, description: String) -> String {
