@@ -1,4 +1,4 @@
-# simple
+# Parameter Syntax
 
 ```
 $ gleam run -- --help
