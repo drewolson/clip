@@ -1,4 +1,7 @@
-# Unreleased
+# 0.5.0
+
+* Rename `clip.param` to `clip.parameter`.
+* Introduce `clip.add_custom_help`.
 
 # 0.4.1
 

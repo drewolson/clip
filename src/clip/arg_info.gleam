@@ -40,10 +40,12 @@ pub type ArgInfo {
   )
 }
 
+/// Create an empty `ArgInfo` value.
 pub fn empty() -> ArgInfo {
   ArgInfo(named: [], positional: [], flags: [], subcommands: [])
 }
 
+/// Merge two `ArgInfo` values.
 pub fn merge(a: ArgInfo, b: ArgInfo) -> ArgInfo {
   ArgInfo(
     named: list.append(a.named, b.named),
@@ -87,6 +89,7 @@ fn pos_str(p_info: PositionalInfo) -> String {
   name
 }
 
+/// Generate user-facing help text from given info, a CLI name, a CLI description.
 pub fn help_text(info: ArgInfo, name: String, description: String) -> String {
   let sub_usage = case info.subcommands {
     [] -> []
