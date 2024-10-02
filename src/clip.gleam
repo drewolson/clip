@@ -18,9 +18,9 @@ pub opaque type Command(a) {
 /// command doesn't require any arguments. Otherwise, use `clip.command`.
 ///
 /// ```gleam
-///  clip.return(1) |> clip.run(["whatever"])
+/// clip.return(1) |> clip.run(["whatever"])
 ///
-///  // Ok(1)
+/// // Ok(1)
 /// ```
 ///
 /// See the [subcommand example](https://github.com/drewolson/clip/tree/main/examples/subcommand)

@@ -89,7 +89,7 @@ fn pos_str(p_info: PositionalInfo) -> String {
   name
 }
 
-/// Generate user-facing help text from given info, a CLI name, a CLI description.
+/// Generate user-facing help text from `ArgInfo`, a name, and a description.
 pub fn help_text(info: ArgInfo, name: String, description: String) -> String {
   let sub_usage = case info.subcommands {
     [] -> []
