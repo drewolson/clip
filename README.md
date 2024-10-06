@@ -1,4 +1,4 @@
-# clip - A CLI Option Parser for Gleam
+# clip - A CLI option parser for Gleam
 
 [![Package Version](https://img.shields.io/hexpm/v/clip)](https://hex.pm/packages/clip)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/clip/)

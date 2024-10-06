@@ -1,7 +1,7 @@
 name = "clip"
 version = "0.5.0"
 
-description = "A CLI Option Parser for Gleam"
+description = "A CLI option parser for Gleam"
 licences = ["MIT"]
 repository = { type = "github", user = "drewolson", repo = "clip" }
 
