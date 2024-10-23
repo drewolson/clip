@@ -1,4 +1,4 @@
-# Unreleased
+# 0.6.0
 
 * Introduce `clip/help` module for building help text.
 
