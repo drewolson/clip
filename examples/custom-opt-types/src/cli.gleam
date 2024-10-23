@@ -1,5 +1,6 @@
 import argv
 import clip
+import clip/help
 import clip/opt
 import gleam/io
 import gleam/string
@@ -58,7 +59,7 @@ fn command() {
 pub fn main() {
   let result =
     command()
-    |> clip.add_help("custom-opt-types", "Options with custom types")
+    |> clip.help(help.simple("custom-opt-types", "Options with custom types"))
     |> clip.run(argv.load().arguments)
 
   case result {

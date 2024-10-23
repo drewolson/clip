@@ -1,5 +1,6 @@
 import argv
 import clip
+import clip/help
 import clip/opt
 import gleam/io
 import gleam/string
@@ -22,7 +23,7 @@ fn command() {
 pub fn main() {
   let result =
     command()
-    |> clip.add_help("parameter-syntax", "Create a person")
+    |> clip.help(help.simple("parameter-syntax", "Create a person"))
     |> clip.run(argv.load().arguments)
 
   case result {

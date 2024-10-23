@@ -1,6 +1,7 @@
 import argv
 import clip
 import clip/flag
+import clip/help
 import clip/opt
 import gleam/io
 import gleam/string
@@ -16,24 +17,24 @@ fn foo_command() {
   clip.command(fn(a) { fn(b) { Foo(a, b) } })
   |> clip.opt(opt.new("a") |> opt.help("A"))
   |> clip.opt(opt.new("b") |> opt.help("B") |> opt.int)
-  |> clip.add_help("subcommand foo", "Run foo")
+  |> clip.help(help.simple("subcommand foo", "Run foo"))
 }
 
 fn bar_command() {
   clip.command(fn(c) { Bar(c) })
   |> clip.flag(flag.new("c") |> flag.help("C"))
-  |> clip.add_help("subcommand bar", "Run bar")
+  |> clip.help(help.simple("subcommand bar", "Run bar"))
 }
 
 fn baz_command() {
   clip.command(fn(d) { Baz(d) })
   |> clip.opt(opt.new("d") |> opt.help("D") |> opt.float)
-  |> clip.add_help("subcommand baz", "Run baz")
+  |> clip.help(help.simple("subcommand baz", "Run baz"))
 }
 
 fn qux_command() {
   clip.return(Qux)
-  |> clip.add_help("subcommand qux", "Run qux")
+  |> clip.help(help.simple("subcommand qux", "Run qux"))
 }
 
 fn command() {
@@ -48,7 +49,7 @@ fn command() {
 pub fn main() {
   let result =
     command()
-    |> clip.add_help("subcommand", "Run a subcommand")
+    |> clip.help(help.simple("subcommand", "Run a subcommand"))
     |> clip.run(argv.load().arguments)
 
   case result {

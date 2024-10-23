@@ -1,6 +1,7 @@
 import argv
 import clip
 import clip/arg
+import clip/help
 import clip/opt
 import gleam/io
 import gleam/string
@@ -26,7 +27,7 @@ fn command() {
 pub fn main() {
   let result =
     command()
-    |> clip.add_help("default-values", "Provide default values")
+    |> clip.help(help.simple("default-values", "Provide default values"))
     |> clip.run(argv.load().arguments)
 
   case result {

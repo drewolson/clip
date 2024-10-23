@@ -10,6 +10,7 @@
 ```gleam
 import argv
 import clip
+import clip/help
 import clip/opt
 import gleam/io
 import gleam/string
@@ -32,7 +33,7 @@ fn command() {
 pub fn main() {
   let result =
     command()
-    |> clip.add_help("person", "Create a person")
+    |> clip.help(help.simple("person", "Create a person"))
     |> clip.run(argv.load().arguments)
 
   case result {
@@ -79,8 +80,8 @@ steps:
 2. Next, use the `|>` operator along with `clip.opt`, `clip.flag`, and
    `clip.arg` to parse command line arguments and provide them as parameters to
    the function given to `clip.command`.
-3. Optionally use `clip.add_help` to generate help text for your command. The
-   user can view this help text via the `--help,-h` flag.
+3. Optionally use `clip.help` and `clip/help` to generate help text for your
+   command. The user can view this help text via the `--help,-h` flag.
 4. Finally, run your parser with `clip.run`, giving it the command you have
    built and the list arguments to parse. I recommend using the `argv` library
    to access these arguments from both erlang and javascript.

@@ -2,6 +2,7 @@ import argv
 import clip
 import clip/arg
 import clip/flag
+import clip/help
 import clip/opt
 import gleam/io
 import gleam/string
@@ -23,7 +24,7 @@ fn command() {
 pub fn main() {
   let result =
     command()
-    |> clip.add_help("many-opts", "Provide many options")
+    |> clip.help(help.simple("many-opts", "Provide many options"))
     |> clip.run(argv.load().arguments)
 
   case result {
