@@ -13,7 +13,7 @@ pub fn run(help: Help, arg_info: ArgInfo) -> String {
 }
 
 /// Generate custom help text by providing a function that transforms
-/// `ArgInfo` into a `String.
+/// `ArgInfo` into a `String`.
 pub fn custom(f: fn(ArgInfo) -> String) -> Help {
   Help(f)
 }
