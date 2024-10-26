@@ -1,3 +1,7 @@
+# 0.6.1
+
+* Modify `help.simple` generated text.
+
 # 0.6.0
 
 * Introduce `clip/help` module for building help text.
