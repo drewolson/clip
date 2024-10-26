@@ -7,7 +7,9 @@ $ npm run build
 
 ```
 $ node dist/cli.js --help
-person -- Create a person
+person
+
+  Create a person
 
 Usage:
 

@@ -4,7 +4,9 @@
 $ gleam run -- --help
    Compiled in 0.01s
     Running cli.main
-default-values -- Provide default values
+default-values
+
+  Provide default values
 
 Usage:
 

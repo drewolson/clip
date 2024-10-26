@@ -4,7 +4,9 @@
 $ gleam run -- --help
    Compiled in 0.00s
     Running cli.main
-subcommand -- Run a subcommand
+subcommand
+
+  Run a subcommand
 
 Usage:
 
@@ -26,7 +28,9 @@ Options:
 $ gleam run -- foo --help
    Compiled in 0.01s
     Running cli.main
-subcommand foo -- Run foo
+subcommand foo
+
+  Run foo
 
 Usage:
 

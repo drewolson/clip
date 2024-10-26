@@ -4,7 +4,9 @@
 $ gleam run -- --help
    Compiled in 0.01s
     Running cli.main
-many-opts -- Provide many options
+many-opts
+
+  Provide many options
 
 Usage:
 

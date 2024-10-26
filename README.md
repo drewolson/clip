@@ -47,7 +47,9 @@ pub fn main() {
 $ gleam run -- --help
    Compiled in 0.00s
     Running cli.main
-person -- Create a person
+person
+
+  Create a person
 
 Usage:
 

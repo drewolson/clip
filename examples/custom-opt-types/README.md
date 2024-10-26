@@ -5,7 +5,9 @@ $ gleam run -- --help
   Compiling cli
    Compiled in 0.22s
     Running cli.main
-custom-opt-types -- Options with custom types
+custom-opt-types
+
+  Options with custom types
 
 Usage:
 

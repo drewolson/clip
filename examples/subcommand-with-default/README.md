@@ -5,7 +5,9 @@ $ gleam run -- --help
   Compiling cli
    Compiled in 0.23s
     Running cli.main
-subcommand -- Run a subcommand
+subcommand
+
+  Run a subcommand
 
 Usage:
 
