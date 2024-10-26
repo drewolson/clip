@@ -7,7 +7,9 @@ import gleeunit/should
 
 pub fn complex_command_help_test() {
   let expected =
-    "complex -- complex command
+    "complex
+
+  complex command
 
 Usage:
 
