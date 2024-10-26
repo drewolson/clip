@@ -215,11 +215,9 @@ pub fn help_text(info: ArgInfo, name: String, description: String) -> String {
     False -> ["Options:", opt_desc]
   }
 
-  string.join(
-    [name <> " -- " <> description, "Usage:\n\n  " <> usage]
-      |> list.append(sub_lines)
-      |> list.append(pos_lines)
-      |> list.append(opt_lines),
-    "\n\n",
-  )
+  [name, "  " <> description, "Usage:", "  " <> usage]
+  |> list.append(sub_lines)
+  |> list.append(pos_lines)
+  |> list.append(opt_lines)
+  |> string.join("\n\n")
 }
