@@ -75,7 +75,12 @@ pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
 /// curried function and then provide arguments to be supplied to that function.
 ///
 /// ```gleam
-/// clip.command(fn(a) { fn(b) { #(a, b) } })
+/// clip.command({
+///   use a <- clip.parameter
+///   use b <- clip.parameter
+///
+///   #(a, b)
+/// })
 /// |> clip.opt(opt.new("first"))
 /// |> clip.opt(opt.new("second"))
 /// |> clip.run(["--first", "foo", "--second", "bar"])
