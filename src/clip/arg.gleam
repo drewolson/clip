@@ -22,15 +22,12 @@ pub opaque type Arg(a) {
 }
 
 fn pos_info(arg: Arg(a)) -> PositionalInfo {
-  case arg {
-    Arg(name:, default:, help:, try_map: _) ->
-      PositionalInfo(
-        name:,
-        default: default |> option.map(string.inspect),
-        help:,
-        repeat: NoRepeat,
-      )
-  }
+  PositionalInfo(
+    name: arg.name,
+    default: arg.default |> option.map(string.inspect),
+    help: arg.help,
+    repeat: NoRepeat,
+  )
 }
 
 /// Used internally, not intended for direct usage.
@@ -69,13 +66,10 @@ pub fn to_arg_info_many1(arg: Arg(a)) -> ArgInfo {
 /// Note: `try_map` can change the type of an `Arg` and therefore clears any
 /// previously set default value.
 pub fn try_map(arg: Arg(a), f: fn(a) -> Result(b, String)) -> Arg(b) {
-  case arg {
-    Arg(name:, default: _, help:, try_map:) ->
-      Arg(name:, default: None, help:, try_map: fn(arg) {
-        use a <- result.try(try_map(arg))
-        f(a)
-      })
-  }
+  Arg(name: arg.name, default: None, help: arg.help, try_map: fn(v) {
+    use a <- result.try(arg.try_map(v))
+    f(a)
+  })
 }
 
 /// Modify the value produced by an `Arg` in a way that cannot fail.
@@ -98,18 +92,12 @@ pub fn optional(arg: Arg(a)) -> Arg(Result(a, Nil)) {
 
 /// Provide a default value for an `Arg` when it is not provided by the user.
 pub fn default(arg: Arg(a), default: a) -> Arg(a) {
-  case arg {
-    Arg(name:, default: _, help:, try_map:) ->
-      Arg(name:, default: Some(default), help:, try_map:)
-  }
+  Arg(..arg, default: Some(default))
 }
 
 /// Add help text to an `Arg`.
 pub fn help(arg: Arg(a), help: String) -> Arg(a) {
-  case arg {
-    Arg(name:, default:, help: _, try_map:) ->
-      Arg(name:, default:, help: Some(help), try_map:)
-  }
+  Arg(..arg, help: Some(help))
 }
 
 /// Modify an `Arg(String)` to produce an `Int`.

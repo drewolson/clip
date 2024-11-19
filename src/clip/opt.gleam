@@ -21,20 +21,17 @@ pub opaque type Opt(a) {
 
 /// Used internally, not intended for direct usage.
 pub fn to_arg_info(opt: Opt(a)) -> ArgInfo {
-  case opt {
-    Opt(name:, short:, default:, help:, try_map: _) ->
-      ArgInfo(
-        ..arg_info.empty(),
-        named: [
-          NamedInfo(
-            name:,
-            short:,
-            default: default |> option.map(string.inspect),
-            help:,
-          ),
-        ],
-      )
-  }
+  ArgInfo(
+    ..arg_info.empty(),
+    named: [
+      NamedInfo(
+        name: opt.name,
+        short: opt.short,
+        default: opt.default |> option.map(string.inspect),
+        help: opt.help,
+      ),
+    ],
+  )
 }
 
 /// Modify the value produced by an `Opt` in a way that may fail.
@@ -52,13 +49,16 @@ pub fn to_arg_info(opt: Opt(a)) -> ArgInfo {
 /// Note: `try_map` can change the type of an `Opt` and therefore clears any
 /// previously set default value.
 pub fn try_map(opt: Opt(a), f: fn(a) -> Result(b, String)) -> Opt(b) {
-  case opt {
-    Opt(name:, short:, default: _, help:, try_map:) ->
-      Opt(name:, short:, default: None, help:, try_map: fn(arg) {
-        use a <- result.try(try_map(arg))
-        f(a)
-      })
-  }
+  Opt(
+    name: opt.name,
+    short: opt.short,
+    default: None,
+    help: opt.help,
+    try_map: fn(arg) {
+      use a <- result.try(opt.try_map(arg))
+      f(a)
+    },
+  )
 }
 
 /// Modify the value produced by an `Opt` in a way that cannot fail.
@@ -76,10 +76,7 @@ pub fn map(opt: Opt(a), f: fn(a) -> b) -> Opt(b) {
 
 /// Provide a default value for an `Opt` when it is not provided by the user.
 pub fn default(opt: Opt(a), default: a) -> Opt(a) {
-  case opt {
-    Opt(name:, short:, default: _, help:, try_map:) ->
-      Opt(name:, short:, default: Some(default), help:, try_map:)
-  }
+  Opt(..opt, default: Some(default))
 }
 
 /// Transform an `Opt(a)` to an `Opt(Result(a, Nil)`, making it optional.
@@ -89,10 +86,7 @@ pub fn optional(opt: Opt(a)) -> Opt(Result(a, Nil)) {
 
 /// Add help text to an `Opt`.
 pub fn help(opt: Opt(a), help: String) -> Opt(a) {
-  case opt {
-    Opt(name:, short:, default:, help: _, try_map:) ->
-      Opt(name:, short:, default:, help: Some(help), try_map:)
-  }
+  Opt(..opt, help: Some(help))
 }
 
 /// Create a new `Opt` with the provided name. New `Opt`s always initially
@@ -113,10 +107,7 @@ pub fn new(name: String) -> Opt(String) {
 /// // Ok("Drew")
 /// ```
 pub fn short(opt: Opt(String), short_name: String) -> Opt(String) {
-  case opt {
-    Opt(name:, short: _, default:, help:, try_map:) ->
-      Opt(name:, short: Some(short_name), default:, help:, try_map:)
-  }
+  Opt(..opt, short: Some(short_name))
 }
 
 /// Modify an `Opt(String)` to produce an `Int`.

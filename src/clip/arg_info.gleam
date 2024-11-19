@@ -138,7 +138,7 @@ pub fn help_text(info: ArgInfo, name: String, description: String) -> String {
       let name =
         p_info
         |> pos_str
-        |> string.pad_right(max_size, " ")
+        |> string.pad_end(max_size, " ")
 
       let help_text = case p_info.repeat, p_info.default {
         ManyRepeat, _ ->
@@ -167,7 +167,7 @@ pub fn help_text(info: ArgInfo, name: String, description: String) -> String {
       let names =
         n_info
         |> named_str
-        |> string.pad_right(max_size, " ")
+        |> string.pad_end(max_size, " ")
 
       case n_info.default {
         None -> names <> "\t" <> n_info.help |> option.unwrap("")
@@ -187,7 +187,7 @@ pub fn help_text(info: ArgInfo, name: String, description: String) -> String {
     |> list.map(fn(f_info) {
       f_info
       |> flag_str
-      |> string.pad_right(max_size, " ")
+      |> string.pad_end(max_size, " ")
       <> "\t"
       <> f_info.help
       |> option.unwrap("")

@@ -46,7 +46,9 @@ pub fn parameter_command_test() {
 
 pub fn opt_and_flag_order_does_not_matter_test() {
   let argv =
-    [["--a", "a"], ["--b"], ["c", "d", "e", "f"]] |> list.shuffle |> list.concat
+    [["--a", "a"], ["--b"], ["c", "d", "e", "f"]]
+    |> list.shuffle
+    |> list.flatten
 
   let result =
     clip.command(fn(a) { fn(b) { fn(c) { fn(d) { #(a, b, c, d) } } } })
