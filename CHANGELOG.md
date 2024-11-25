@@ -1,3 +1,7 @@
+# 0.6.2
+
+* Update `gleam_stdlib` dependency.
+
 # 0.6.1
 
 * Modify `help.simple` generated text.
