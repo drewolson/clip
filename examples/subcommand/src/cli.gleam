@@ -14,7 +14,12 @@ type Args {
 }
 
 fn foo_command() {
-  clip.command(fn(a) { fn(b) { Foo(a, b) } })
+  clip.command({
+    use a <- clip.parameter
+    use b <- clip.parameter
+
+    Foo(a, b)
+  })
   |> clip.opt(opt.new("a") |> opt.help("A"))
   |> clip.opt(opt.new("b") |> opt.help("B") |> opt.int)
   |> clip.help(help.simple("subcommand foo", "Run foo"))

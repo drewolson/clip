@@ -13,7 +13,12 @@ type Args {
 }
 
 fn foo_command() {
-  clip.command(fn(a) { fn(b) { Foo(a, b) } })
+  clip.command({
+    use a <- clip.parameter
+    use b <- clip.parameter
+
+    Foo(a, b)
+  })
   |> clip.opt(opt.new("a") |> opt.help("A"))
   |> clip.opt(opt.new("b") |> opt.help("B") |> opt.int)
   |> clip.help(help.simple("subcommand foo", "Run foo"))
@@ -25,7 +30,7 @@ fn bar_command() {
   |> clip.help(help.simple("subcommand bar", "Run bar"))
 }
 
-fn baz_command() {
+fn top_level_command() {
   clip.command(fn(d) { TopLevel(d) })
   |> clip.opt(opt.new("d") |> opt.help("D") |> opt.float)
   |> clip.help(help.simple("top-level", "Run top-level"))
@@ -34,7 +39,7 @@ fn baz_command() {
 fn command() {
   clip.subcommands_with_default(
     [#("foo", foo_command()), #("bar", bar_command())],
-    baz_command(),
+    top_level_command(),
   )
 }
 

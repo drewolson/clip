@@ -12,8 +12,13 @@ type Args {
 }
 
 fn command() {
-  clip.command(fn(named) {
-    fn(flag) { fn(next) { fn(rest) { Args(named, flag, next, rest) } } }
+  clip.command({
+    use named <- clip.parameter
+    use flag <- clip.parameter
+    use next <- clip.parameter
+    use rest <- clip.parameter
+
+    Args(named, flag, next, rest)
   })
   |> clip.opt(opt.new("named") |> opt.help("Named"))
   |> clip.flag(flag.new("flag") |> flag.help("Flag"))

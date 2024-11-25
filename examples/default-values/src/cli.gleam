@@ -11,7 +11,12 @@ type Args {
 }
 
 fn command() {
-  clip.command(fn(first) { fn(second) { Args(first, second) } })
+  clip.command({
+    use first <- clip.parameter
+    use second <- clip.parameter
+
+    Args(first, second)
+  })
   |> clip.opt(
     opt.new("first")
     |> opt.help("First")

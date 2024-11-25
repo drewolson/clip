@@ -10,7 +10,12 @@ type Person {
 }
 
 fn command() {
-  clip.command(fn(name) { fn(age) { Person(name, age) } })
+  clip.command({
+    use name <- clip.parameter
+    use age <- clip.parameter
+
+    Person(name, age)
+  })
   |> clip.opt(opt.new("name") |> opt.help("Your name"))
   |> clip.opt(opt.new("age") |> opt.int |> opt.help("Your age"))
 }

@@ -45,10 +45,13 @@ fn fourth_opt() {
 }
 
 fn command() {
-  clip.command(fn(first) {
-    fn(second) {
-      fn(third) { fn(fourth) { Args(first, second, third, fourth) } }
-    }
+  clip.command({
+    use first <- clip.parameter
+    use second <- clip.parameter
+    use third <- clip.parameter
+    use fourth <- clip.parameter
+
+    Args(first, second, third, fourth)
   })
   |> clip.opt(first_opt())
   |> clip.opt(second_opt())
