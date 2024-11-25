@@ -1,3 +1,5 @@
+# Unreleased
+
 # 0.6.2
 
 * Update `gleam_stdlib` dependency.
