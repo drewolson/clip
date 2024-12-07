@@ -1,5 +1,9 @@
 # Unreleased
 
+# 1.0.0
+
+* First stable release.
+
 # 0.6.2
 
 * Update `gleam_stdlib` dependency.
