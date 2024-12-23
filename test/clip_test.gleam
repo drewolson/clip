@@ -13,19 +13,14 @@ pub fn main() {
 }
 
 pub fn complex_command_test() {
-  let result =
-    clip.command(fn(a) { fn(b) { fn(c) { fn(d) { #(a, b, c, d) } } } })
-    |> clip.opt(opt.new("a"))
-    |> clip.flag(flag.new("b"))
-    |> clip.arg(arg.new("c"))
-    |> clip.arg_many(arg.new("d"))
-    |> clip.run(["--a", "a", "--b", "c", "d", "e", "f"])
+  use #(a, c, d, e, f) <- qcheck_util.given(qcheck.tuple5(
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+  ))
 
-  result
-  |> should.equal(Ok(#("a", True, "c", ["d", "e", "f"])))
-}
-
-pub fn parameter_command_test() {
   let result =
     clip.command({
       use a <- clip.parameter
@@ -38,15 +33,23 @@ pub fn parameter_command_test() {
     |> clip.flag(flag.new("b"))
     |> clip.arg(arg.new("c"))
     |> clip.arg_many(arg.new("d"))
-    |> clip.run(["--a", "a", "--b", "c", "d", "e", "f"])
+    |> clip.run(["--a", a, "--b", c, d, e, f])
 
   result
-  |> should.equal(Ok(#("a", True, "c", ["d", "e", "f"])))
+  |> should.equal(Ok(#(a, True, c, [d, e, f])))
 }
 
 pub fn opt_and_flag_order_does_not_matter_test() {
+  use #(a, c, d, e, f) <- qcheck_util.given(qcheck.tuple5(
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+  ))
+
   let argv =
-    [["--a", "a"], ["--b"], ["c", "d", "e", "f"]]
+    [["--a", a], ["--b"], [c, d, e, f]]
     |> list.shuffle
     |> list.flatten
 
@@ -59,7 +62,7 @@ pub fn opt_and_flag_order_does_not_matter_test() {
     |> clip.run(argv)
 
   result
-  |> should.equal(Ok(#("a", True, "c", ["d", "e", "f"])))
+  |> should.equal(Ok(#(a, True, c, [d, e, f])))
 }
 
 pub fn arg_many_accepts_all_after_double_dash_test() {
@@ -79,6 +82,8 @@ pub fn arg_many_accepts_all_after_double_dash_test() {
 }
 
 pub fn subcommands_test() {
+  use val <- qcheck_util.given(qcheck_util.clip_string())
+
   let command =
     clip.subcommands([
       #("a", clip.command(fn(a) { a }) |> clip.opt(opt.new("a"))),
@@ -87,19 +92,21 @@ pub fn subcommands_test() {
     ])
 
   command
-  |> clip.run(["a", "--a", "first"])
-  |> should.equal(Ok("first"))
+  |> clip.run(["a", "--a", val])
+  |> should.equal(Ok(val))
 
   command
-  |> clip.run(["b", "--b", "second"])
-  |> should.equal(Ok("second"))
+  |> clip.run(["b", "--b", val])
+  |> should.equal(Ok(val))
 
   command
-  |> clip.run(["c", "--c", "third"])
-  |> should.equal(Ok("third"))
+  |> clip.run(["c", "--c", val])
+  |> should.equal(Ok(val))
 }
 
 pub fn subcommands_with_default_test() {
+  use val <- qcheck_util.given(qcheck_util.clip_string())
+
   let command =
     clip.subcommands_with_default(
       [
@@ -110,14 +117,14 @@ pub fn subcommands_with_default_test() {
     )
 
   command
-  |> clip.run(["a", "--a", "first"])
-  |> should.equal(Ok("first"))
+  |> clip.run(["a", "--a", val])
+  |> should.equal(Ok(val))
 
   command
-  |> clip.run(["b", "--b", "second"])
-  |> should.equal(Ok("second"))
+  |> clip.run(["b", "--b", val])
+  |> should.equal(Ok(val))
 
   command
-  |> clip.run(["--c", "third"])
-  |> should.equal(Ok("third"))
+  |> clip.run(["--c", val])
+  |> should.equal(Ok(val))
 }
