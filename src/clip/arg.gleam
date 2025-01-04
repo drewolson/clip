@@ -37,18 +37,16 @@ pub fn to_arg_info(arg: Arg(a)) -> ArgInfo {
 
 /// Used internally, not intended for direct usage.
 pub fn to_arg_info_many(arg: Arg(a)) -> ArgInfo {
-  ArgInfo(
-    ..arg_info.empty(),
-    positional: [PositionalInfo(..pos_info(arg), repeat: ManyRepeat)],
-  )
+  ArgInfo(..arg_info.empty(), positional: [
+    PositionalInfo(..pos_info(arg), repeat: ManyRepeat),
+  ])
 }
 
 /// Used internally, not intended for direct usage.
 pub fn to_arg_info_many1(arg: Arg(a)) -> ArgInfo {
-  ArgInfo(
-    ..arg_info.empty(),
-    positional: [PositionalInfo(..pos_info(arg), repeat: Many1Repeat)],
-  )
+  ArgInfo(..arg_info.empty(), positional: [
+    PositionalInfo(..pos_info(arg), repeat: Many1Repeat),
+  ])
 }
 
 /// Modify the value produced by an `Arg` in a way that may fail.

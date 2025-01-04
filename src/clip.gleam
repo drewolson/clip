@@ -248,12 +248,9 @@ pub fn help(command: Command(a), help: Help) -> Command(a) {
 
 fn wrap_help(command: Command(a), help: Help) -> ArgsFn(a) {
   let help_info =
-    ArgInfo(
-      ..arg_info.empty(),
-      flags: [
-        FlagInfo(name: "help", short: Some("h"), help: Some("Print this help")),
-      ],
-    )
+    ArgInfo(..arg_info.empty(), flags: [
+      FlagInfo(name: "help", short: Some("h"), help: Some("Print this help")),
+    ])
 
   fn(args) {
     case args {

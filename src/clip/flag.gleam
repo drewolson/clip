@@ -13,10 +13,9 @@ pub opaque type Flag {
 
 /// Used internally, not intended for direct usage.
 pub fn to_arg_info(flag: Flag) -> ArgInfo {
-  ArgInfo(
-    ..arg_info.empty(),
-    flags: [FlagInfo(name: flag.name, short: flag.short, help: flag.help)],
-  )
+  ArgInfo(..arg_info.empty(), flags: [
+    FlagInfo(name: flag.name, short: flag.short, help: flag.help),
+  ])
 }
 
 /// Add help text to a `Flag`.

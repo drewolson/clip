@@ -21,17 +21,14 @@ pub opaque type Opt(a) {
 
 /// Used internally, not intended for direct usage.
 pub fn to_arg_info(opt: Opt(a)) -> ArgInfo {
-  ArgInfo(
-    ..arg_info.empty(),
-    named: [
-      NamedInfo(
-        name: opt.name,
-        short: opt.short,
-        default: opt.default |> option.map(string.inspect),
-        help: opt.help,
-      ),
-    ],
-  )
+  ArgInfo(..arg_info.empty(), named: [
+    NamedInfo(
+      name: opt.name,
+      short: opt.short,
+      default: opt.default |> option.map(string.inspect),
+      help: opt.help,
+    ),
+  ])
 }
 
 /// Modify the value produced by an `Opt` in a way that may fail.
