@@ -27,7 +27,7 @@ pub fn opt_test() {
 pub fn try_map_test() {
   use #(name, value) <- qcheck_util.given(qcheck.tuple2(
     qcheck_util.clip_string(),
-    qcheck.small_positive_or_zero_int(),
+    qcheck.int_small_positive_or_zero(),
   ))
 
   clip.command(fn(a) { a })
@@ -97,7 +97,7 @@ pub fn default_test() {
 pub fn int_test() {
   use #(name, value) <- qcheck_util.given(qcheck.tuple2(
     qcheck_util.clip_string(),
-    qcheck.small_positive_or_zero_int(),
+    qcheck.int_small_positive_or_zero(),
   ))
 
   clip.command(fn(a) { a })

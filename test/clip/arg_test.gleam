@@ -22,7 +22,7 @@ pub fn arg_test() {
 }
 
 pub fn try_map_test() {
-  use i <- qcheck_util.given(qcheck.small_positive_or_zero_int())
+  use i <- qcheck_util.given(qcheck.int_small_positive_or_zero())
 
   clip.command(fn(a) { a })
   |> clip.arg(
@@ -79,7 +79,7 @@ pub fn default_test() {
 }
 
 pub fn int_test() {
-  use i <- qcheck_util.given(qcheck.small_positive_or_zero_int())
+  use i <- qcheck_util.given(qcheck.int_small_positive_or_zero())
 
   clip.command(fn(a) { a })
   |> clip.arg(arg.new("arg") |> arg.int)
