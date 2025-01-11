@@ -9,9 +9,9 @@
 
 ```gleam
 import argv
-import clip
+import clip.{type Command}
 import clip/help
-import clip/opt
+import clip/opt.{type Opt}
 import gleam/io
 import gleam/string
 
@@ -19,18 +19,26 @@ type Person {
   Person(name: String, age: Int)
 }
 
-fn command() {
+fn name_opt() -> Opt(String) {
+  opt.new("name") |> opt.help("Your name")
+}
+
+fn age_opt() -> Opt(Int) {
+  opt.new("age") |> opt.int |> opt.help("Your age")
+}
+
+fn command() -> Command(Person) {
   clip.command({
     use name <- clip.parameter
     use age <- clip.parameter
 
     Person(name, age)
   })
-  |> clip.opt(opt.new("name") |> opt.help("Your name"))
-  |> clip.opt(opt.new("age") |> opt.int |> opt.help("Your age"))
+  |> clip.opt(name_opt())
+  |> clip.opt(age_opt())
 }
 
-pub fn main() {
+pub fn main() -> Nil {
   let result =
     command()
     |> clip.help(help.simple("person", "Create a person"))
