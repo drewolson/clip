@@ -8,7 +8,7 @@ import qcheck
 import test_helper/qcheck_util
 
 pub fn arg_test() {
-  use value <- qcheck_util.given(qcheck_util.clip_string())
+  use value <- qcheck.given(qcheck_util.clip_string())
 
   let command =
     clip.command(fn(a) { a })
@@ -22,7 +22,7 @@ pub fn arg_test() {
 }
 
 pub fn try_map_test() {
-  use i <- qcheck_util.given(qcheck.int_small_positive_or_zero())
+  use i <- qcheck.given(qcheck.small_non_negative_int())
 
   clip.command(fn(a) { a })
   |> clip.arg(
@@ -39,7 +39,7 @@ pub fn try_map_test() {
 }
 
 pub fn map_test() {
-  use value <- qcheck_util.given(qcheck_util.clip_string())
+  use value <- qcheck.given(qcheck_util.clip_string())
 
   clip.command(fn(a) { a })
   |> clip.arg(arg.new("arg") |> arg.map(string.uppercase))
@@ -48,7 +48,7 @@ pub fn map_test() {
 }
 
 pub fn optional_test() {
-  use value <- qcheck_util.given(qcheck_util.clip_string())
+  use value <- qcheck.given(qcheck_util.clip_string())
 
   let command =
     clip.command(fn(a) { a })
@@ -62,7 +62,7 @@ pub fn optional_test() {
 }
 
 pub fn default_test() {
-  use #(value, default) <- qcheck_util.given(qcheck.tuple2(
+  use #(value, default) <- qcheck.given(qcheck.tuple2(
     qcheck_util.clip_string(),
     qcheck_util.clip_string(),
   ))
@@ -79,7 +79,7 @@ pub fn default_test() {
 }
 
 pub fn int_test() {
-  use i <- qcheck_util.given(qcheck.int_small_positive_or_zero())
+  use i <- qcheck.given(qcheck.small_non_negative_int())
 
   clip.command(fn(a) { a })
   |> clip.arg(arg.new("arg") |> arg.int)
@@ -88,7 +88,7 @@ pub fn int_test() {
 }
 
 pub fn float_test() {
-  use i <- qcheck_util.given(qcheck.float())
+  use i <- qcheck.given(qcheck.float())
 
   clip.command(fn(a) { a })
   |> clip.arg(arg.new("arg") |> arg.float)

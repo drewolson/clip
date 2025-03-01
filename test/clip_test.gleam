@@ -13,7 +13,7 @@ pub fn main() {
 }
 
 pub fn complex_command_test() {
-  use #(a, c, d, e, f) <- qcheck_util.given(qcheck.tuple5(
+  use #(a, c, d, e, f) <- qcheck.given(qcheck.tuple5(
     qcheck_util.clip_string(),
     qcheck_util.clip_string(),
     qcheck_util.clip_string(),
@@ -40,7 +40,7 @@ pub fn complex_command_test() {
 }
 
 pub fn opt_and_flag_order_does_not_matter_test() {
-  use #(a, c, d, e, f) <- qcheck_util.given(qcheck.tuple5(
+  use #(a, c, d, e, f) <- qcheck.given(qcheck.tuple5(
     qcheck_util.clip_string(),
     qcheck_util.clip_string(),
     qcheck_util.clip_string(),
@@ -66,9 +66,9 @@ pub fn opt_and_flag_order_does_not_matter_test() {
 }
 
 pub fn arg_many_accepts_all_after_double_dash_test() {
-  use #(first, rest) <- qcheck_util.given(qcheck.tuple2(
+  use #(first, rest) <- qcheck.given(qcheck.tuple2(
     qcheck_util.clip_string(),
-    qcheck.list_generic(qcheck.string_non_empty(), 2, 5),
+    qcheck.generic_list(qcheck.non_empty_string(), qcheck.bounded_int(2, 5)),
   ))
 
   let result =
@@ -82,7 +82,7 @@ pub fn arg_many_accepts_all_after_double_dash_test() {
 }
 
 pub fn subcommands_test() {
-  use val <- qcheck_util.given(qcheck_util.clip_string())
+  use val <- qcheck.given(qcheck_util.clip_string())
 
   let command =
     clip.subcommands([
@@ -105,7 +105,7 @@ pub fn subcommands_test() {
 }
 
 pub fn subcommands_with_default_test() {
-  use val <- qcheck_util.given(qcheck_util.clip_string())
+  use val <- qcheck.given(qcheck_util.clip_string())
 
   let command =
     clip.subcommands_with_default(

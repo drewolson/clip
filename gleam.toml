@@ -12,5 +12,4 @@ gleam_stdlib = ">= 0.45.0 and < 2.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
-qcheck = ">= 0.0.6 and < 2.0.0"
-exception = ">= 2.0.0 and < 3.0.0"
+qcheck = ">= 1.0.0 and < 2.0.0"

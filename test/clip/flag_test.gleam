@@ -1,10 +1,11 @@
 import clip
 import clip/flag
 import gleeunit/should
+import qcheck
 import test_helper/qcheck_util
 
 pub fn flag_test() {
-  use value <- qcheck_util.given(qcheck_util.clip_string())
+  use value <- qcheck.given(qcheck_util.clip_string())
 
   let command =
     clip.command(fn(a) { a })
@@ -18,7 +19,7 @@ pub fn flag_test() {
 }
 
 pub fn short_test() {
-  use value <- qcheck_util.given(qcheck_util.clip_string())
+  use value <- qcheck.given(qcheck_util.clip_string())
 
   let command =
     clip.command(fn(a) { a })
