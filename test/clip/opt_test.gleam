@@ -8,7 +8,7 @@ import qcheck
 import test_helper/qcheck_util
 
 pub fn opt_test() {
-  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+  use #(name, value) <- qcheck.given(qcheck.tuple2(
     qcheck_util.clip_string(),
     qcheck_util.clip_string(),
   ))
@@ -25,9 +25,9 @@ pub fn opt_test() {
 }
 
 pub fn try_map_test() {
-  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+  use #(name, value) <- qcheck.given(qcheck.tuple2(
     qcheck_util.clip_string(),
-    qcheck.int_small_positive_or_zero(),
+    qcheck.small_non_negative_int(),
   ))
 
   clip.command(fn(a) { a })
@@ -45,7 +45,7 @@ pub fn try_map_test() {
 }
 
 pub fn map_test() {
-  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+  use #(name, value) <- qcheck.given(qcheck.tuple2(
     qcheck_util.clip_string(),
     qcheck_util.clip_string(),
   ))
@@ -60,7 +60,7 @@ pub fn map_test() {
 }
 
 pub fn optional_test() {
-  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+  use #(name, value) <- qcheck.given(qcheck.tuple2(
     qcheck_util.clip_string(),
     qcheck_util.clip_string(),
   ))
@@ -77,7 +77,7 @@ pub fn optional_test() {
 }
 
 pub fn default_test() {
-  use #(name, value, default) <- qcheck_util.given(qcheck.tuple3(
+  use #(name, value, default) <- qcheck.given(qcheck.tuple3(
     qcheck_util.clip_string(),
     qcheck_util.clip_string(),
     qcheck_util.clip_string(),
@@ -95,9 +95,9 @@ pub fn default_test() {
 }
 
 pub fn int_test() {
-  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+  use #(name, value) <- qcheck.given(qcheck.tuple2(
     qcheck_util.clip_string(),
-    qcheck.int_small_positive_or_zero(),
+    qcheck.small_non_negative_int(),
   ))
 
   clip.command(fn(a) { a })
@@ -107,7 +107,7 @@ pub fn int_test() {
 }
 
 pub fn float_test() {
-  use #(name, value) <- qcheck_util.given(qcheck.tuple2(
+  use #(name, value) <- qcheck.given(qcheck.tuple2(
     qcheck_util.clip_string(),
     qcheck.float(),
   ))
