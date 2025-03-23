@@ -4,14 +4,17 @@ import clip/arg.{type Arg}
 import clip/arg_info.{type ArgInfo, ArgInfo, FlagInfo}
 import clip/flag.{type Flag}
 import clip/help.{type Help}
-import clip/internal/aliases.{type Args, type ArgsFn, type FnResult}
 import clip/opt.{type Opt}
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/result
 
 pub opaque type Command(a) {
-  Command(info: ArgInfo, help: Option(Help), f: ArgsFn(a))
+  Command(
+    info: ArgInfo,
+    help: Option(Help),
+    f: fn(List(String)) -> Result(#(a, List(String)), String),
+  )
 }
 
 /// The `return` function takes a value `val` and produces a `Command` that, when
@@ -204,8 +207,8 @@ pub fn flag(command: Command(fn(Bool) -> b), flag: Flag) -> Command(b) {
 fn run_subcommands(
   subcommands: List(#(String, Command(a))),
   default: Command(a),
-  args: Args,
-) -> FnResult(a) {
+  args: List(String),
+) -> Result(#(a, List(String)), String) {
   case subcommands, args {
     [#(name, command), ..], [head, ..rest] if name == head ->
       run_aux(command, rest)
@@ -246,7 +249,10 @@ pub fn help(command: Command(a), help: Help) -> Command(a) {
   Command(..command, help: Some(help))
 }
 
-fn wrap_help(command: Command(a), help: Help) -> ArgsFn(a) {
+fn wrap_help(
+  command: Command(a),
+  help: Help,
+) -> fn(List(String)) -> Result(#(a, List(String)), String) {
   let help_info =
     ArgInfo(..arg_info.empty(), flags: [
       FlagInfo(name: "help", short: Some("h"), help: Some("Print this help")),
@@ -261,7 +267,10 @@ fn wrap_help(command: Command(a), help: Help) -> ArgsFn(a) {
   }
 }
 
-fn run_aux(command: Command(a), args: List(String)) -> FnResult(a) {
+fn run_aux(
+  command: Command(a),
+  args: List(String),
+) -> Result(#(a, List(String)), String) {
   let f = case command.help {
     None -> command.f
     Some(help) -> wrap_help(command, help)
