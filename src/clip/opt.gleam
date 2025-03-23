@@ -2,7 +2,6 @@
 //// value, such as `--name "Drew"`
 
 import clip/arg_info.{type ArgInfo, ArgInfo, NamedInfo}
-import clip/internal/aliases.{type Args, type FnResult}
 import gleam/float
 import gleam/int
 import gleam/option.{type Option, None, Some}
@@ -143,7 +142,10 @@ pub fn float(opt: Opt(String)) -> Opt(Float) {
 
 /// Run an `Opt(a)` against a list of arguments. Used internally by `clip`, not
 /// intended for direct usage.
-pub fn run(opt: Opt(a), args: Args) -> FnResult(a) {
+pub fn run(
+  opt: Opt(a),
+  args: List(String),
+) -> Result(#(a, List(String)), String) {
   let long_name = "--" <> opt.name
   let short_name = option.map(opt.short, fn(s) { "-" <> s })
   let names = short_name |> option.map(fn(s) { [s] }) |> option.unwrap([])

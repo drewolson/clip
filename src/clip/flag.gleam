@@ -3,7 +3,6 @@
 //// and `False` when not present.
 
 import clip/arg_info.{type ArgInfo, ArgInfo, FlagInfo}
-import clip/internal/aliases.{type Args, type FnResult}
 import gleam/option.{type Option, None, Some}
 import gleam/result
 
@@ -45,7 +44,10 @@ pub fn short(flag: Flag, short: String) -> Flag {
 
 /// Run a `Flag` against a list of arguments. Used internally by `clip`, not
 /// intended for direct usage.
-pub fn run(flag: Flag, args: Args) -> FnResult(Bool) {
+pub fn run(
+  flag: Flag,
+  args: List(String),
+) -> Result(#(Bool, List(String)), String) {
   let long_name = "--" <> flag.name
   let short_name = option.map(flag.short, fn(s) { "-" <> s })
   case args {

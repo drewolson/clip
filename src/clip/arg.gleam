@@ -4,7 +4,6 @@ import clip/arg_info.{
   type ArgInfo, type PositionalInfo, ArgInfo, Many1Repeat, ManyRepeat, NoRepeat,
   PositionalInfo,
 }
-import clip/internal/aliases.{type Args, type FnResult}
 import gleam/float
 import gleam/int
 import gleam/list
@@ -145,7 +144,11 @@ fn not_num(str: String) -> Bool {
   !result
 }
 
-fn run_aux(strict: Bool, arg: Arg(a), args: Args) -> FnResult(a) {
+fn run_aux(
+  strict: Bool,
+  arg: Arg(a),
+  args: List(String),
+) -> Result(#(a, List(String)), String) {
   case args, arg.default {
     ["--", ..rest], _ ->
       run_aux(False, arg, rest)
@@ -168,11 +171,18 @@ fn run_aux(strict: Bool, arg: Arg(a), args: Args) -> FnResult(a) {
 
 /// Run an `Arg(a)` against a list of arguments. Used internally by `clip`, not
 /// intended for direct usage.
-pub fn run(arg: Arg(a), args: Args) -> FnResult(a) {
+pub fn run(
+  arg: Arg(a),
+  args: List(String),
+) -> Result(#(a, List(String)), String) {
   run_aux(True, arg, args)
 }
 
-fn run_many_aux(acc: List(a), arg: Arg(a), args: Args) -> FnResult(List(a)) {
+fn run_many_aux(
+  acc: List(a),
+  arg: Arg(a),
+  args: List(String),
+) -> Result(#(List(a), List(String)), String) {
   case args {
     [] -> Ok(#(list.reverse(acc), []))
     _ ->
@@ -185,13 +195,19 @@ fn run_many_aux(acc: List(a), arg: Arg(a), args: Args) -> FnResult(List(a)) {
 
 /// Run an `Arg(a)` against a list of arguments producing zero or more results.
 /// Used internally by `clip`, not intended for direct usage.
-pub fn run_many(arg: Arg(a), args: Args) -> FnResult(List(a)) {
+pub fn run_many(
+  arg: Arg(a),
+  args: List(String),
+) -> Result(#(List(a), List(String)), String) {
   run_many_aux([], arg, args)
 }
 
 /// Run an `Arg(a)` against a list of arguments producing one or more results.
 /// Used internally by `clip`, not intended for direct usage.
-pub fn run_many1(arg: Arg(a), args: Args) -> FnResult(List(a)) {
+pub fn run_many1(
+  arg: Arg(a),
+  args: List(String),
+) -> Result(#(List(a), List(String)), String) {
   use #(vs, rest) <- result.try(run_many_aux([], arg, args))
   case vs {
     [] -> Error("must provide at least one valid value for: " <> arg.name)
