@@ -53,9 +53,7 @@ pub fn return(val: a) -> Command(a) {
 /// }
 /// ```
 ///
-/// You can use either style when calling `clip.command`. See the
-/// [parameter syntax example](https://github.com/drewolson/clip/tree/main/examples/parameter-syntax)
-/// for more details.
+/// You can use either style when calling `clip.command`.
 pub fn parameter(f: fn(a) -> b) -> fn(a) -> b {
   f
 }

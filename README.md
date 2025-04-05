@@ -84,7 +84,7 @@ steps:
 
 1. First, invoke `clip.command` providing a function to be called with your
    parsed options. This function can be built using the
-   [parameter syntax](https://github.com/drewolson/clip/tree/main/examples/parameter-syntax).
+   [parameter syntax](https://hexdocs.pm/clip/clip.html#parameter).
    Alternatively, you can directly provide a curried function, meaning a two argument
    function looks like `fn(a) { fn(b) { do_stuff(a, b) } }`.
 2. Next, use the `|>` operator along with `clip.opt`, `clip.flag`, and
