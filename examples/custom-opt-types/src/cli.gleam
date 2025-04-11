@@ -1,7 +1,7 @@
 import argv
-import clip
+import clip.{type Command}
 import clip/help
-import clip/opt
+import clip/opt.{type Opt}
 import gleam/io
 import gleam/string
 
@@ -14,25 +14,25 @@ type Args {
   Args(first: Int, second: Float, third: String, fourth: Custom)
 }
 
-fn first_opt() {
+fn first_opt() -> Opt(Int) {
   opt.new("first")
   |> opt.help("First")
   |> opt.int
 }
 
-fn second_opt() {
+fn second_opt() -> Opt(Float) {
   opt.new("second")
   |> opt.help("Second")
   |> opt.float
 }
 
-fn third_opt() {
+fn third_opt() -> Opt(String) {
   opt.new("third")
   |> opt.help("Third")
   |> opt.map(fn(v) { string.uppercase(v) })
 }
 
-fn fourth_opt() {
+fn fourth_opt() -> Opt(Custom) {
   opt.new("fourth")
   |> opt.help("Fourth")
   |> opt.try_map(fn(v) {
@@ -44,7 +44,7 @@ fn fourth_opt() {
   })
 }
 
-fn command() {
+fn command() -> Command(Args) {
   clip.command({
     use first <- clip.parameter
     use second <- clip.parameter
@@ -59,7 +59,7 @@ fn command() {
   |> clip.opt(fourth_opt())
 }
 
-pub fn main() {
+pub fn main() -> Nil {
   let result =
     command()
     |> clip.help(help.simple("custom-opt-types", "Options with custom types"))

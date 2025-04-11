@@ -1,5 +1,5 @@
 import argv
-import clip
+import clip.{type Command}
 import clip/arg
 import clip/help
 import clip/opt
@@ -10,7 +10,7 @@ type Args {
   Args(first: String, second: Result(String, Nil))
 }
 
-fn command() {
+fn command() -> Command(Args) {
   clip.command({
     use first <- clip.parameter
     use second <- clip.parameter
@@ -29,7 +29,7 @@ fn command() {
   )
 }
 
-pub fn main() {
+pub fn main() -> Nil {
   let result =
     command()
     |> clip.help(help.simple("default-values", "Provide default values"))

@@ -1,5 +1,5 @@
 import argv
-import clip
+import clip.{type Command}
 import clip/flag
 import clip/help
 import clip/opt
@@ -13,7 +13,7 @@ type Args {
   Qux
 }
 
-fn foo_command() {
+fn foo_command() -> Command(Args) {
   clip.command({
     use a <- clip.parameter
     use b <- clip.parameter
@@ -25,24 +25,24 @@ fn foo_command() {
   |> clip.help(help.simple("subcommand foo", "Run foo"))
 }
 
-fn bar_command() {
+fn bar_command() -> Command(Args) {
   clip.command(fn(c) { Bar(c) })
   |> clip.flag(flag.new("c") |> flag.help("C"))
   |> clip.help(help.simple("subcommand bar", "Run bar"))
 }
 
-fn baz_command() {
+fn baz_command() -> Command(Args) {
   clip.command(fn(d) { Baz(d) })
   |> clip.opt(opt.new("d") |> opt.help("D") |> opt.float)
   |> clip.help(help.simple("subcommand baz", "Run baz"))
 }
 
-fn qux_command() {
+fn qux_command() -> Command(Args) {
   clip.return(Qux)
   |> clip.help(help.simple("subcommand qux", "Run qux"))
 }
 
-fn command() {
+fn command() -> Command(Args) {
   clip.subcommands([
     #("foo", foo_command()),
     #("bar", bar_command()),
@@ -51,7 +51,7 @@ fn command() {
   ])
 }
 
-pub fn main() {
+pub fn main() -> Nil {
   let result =
     command()
     |> clip.help(help.simple("subcommand", "Run a subcommand"))

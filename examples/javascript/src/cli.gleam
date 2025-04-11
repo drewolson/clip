@@ -1,5 +1,5 @@
 import argv
-import clip
+import clip.{type Command}
 import clip/help
 import clip/opt
 import gleam/io
@@ -9,7 +9,7 @@ type Person {
   Person(name: String, age: Int)
 }
 
-fn command() {
+fn command() -> Command(Person) {
   clip.command({
     use name <- clip.parameter
     use age <- clip.parameter
@@ -20,7 +20,7 @@ fn command() {
   |> clip.opt(opt.new("age") |> opt.int |> opt.help("Your age"))
 }
 
-pub fn main() {
+pub fn main() -> Nil {
   let result =
     command()
     |> clip.help(help.simple("person", "Create a person"))

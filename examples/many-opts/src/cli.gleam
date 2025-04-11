@@ -1,5 +1,5 @@
 import argv
-import clip
+import clip.{type Command}
 import clip/arg
 import clip/flag
 import clip/help
@@ -11,7 +11,7 @@ type Args {
   Args(named: String, flag: Bool, next: String, rest: List(String))
 }
 
-fn command() {
+fn command() -> Command(Args) {
   clip.command({
     use named <- clip.parameter
     use flag <- clip.parameter
@@ -26,7 +26,7 @@ fn command() {
   |> clip.arg_many(arg.new("rest") |> arg.help("Rest"))
 }
 
-pub fn main() {
+pub fn main() -> Nil {
   let result =
     command()
     |> clip.help(help.simple("many-opts", "Provide many options"))
