@@ -3,7 +3,6 @@ import clip/opt
 import gleam/float
 import gleam/int
 import gleam/string
-import gleeunit/should
 import qcheck
 import test_helper/qcheck_util
 
@@ -17,11 +16,9 @@ pub fn opt_test() {
     clip.command(fn(a) { a })
     |> clip.opt(opt.new(name))
 
-  clip.run(command, ["--" <> name, value])
-  |> should.equal(Ok(value))
+  assert clip.run(command, ["--" <> name, value]) == Ok(value)
 
-  clip.run(command, [])
-  |> should.equal(Error("missing required arg: --" <> name))
+  assert clip.run(command, []) == Error("missing required arg: --" <> name)
 }
 
 pub fn try_map_test() {
@@ -30,18 +27,20 @@ pub fn try_map_test() {
     qcheck.small_non_negative_int(),
   ))
 
-  clip.command(fn(a) { a })
-  |> clip.opt(
-    opt.new(name)
-    |> opt.try_map(fn(s) {
-      case int.parse(s) {
-        Ok(n) -> Ok(n)
-        Error(Nil) -> Error("Bad int")
-      }
-    }),
-  )
-  |> clip.run(["--" <> name, int.to_string(value)])
-  |> should.equal(Ok(value))
+  let result =
+    clip.command(fn(a) { a })
+    |> clip.opt(
+      opt.new(name)
+      |> opt.try_map(fn(s) {
+        case int.parse(s) {
+          Ok(n) -> Ok(n)
+          Error(Nil) -> Error("Bad int")
+        }
+      }),
+    )
+    |> clip.run(["--" <> name, int.to_string(value)])
+
+  assert result == Ok(value)
 }
 
 pub fn map_test() {
@@ -50,13 +49,15 @@ pub fn map_test() {
     qcheck_util.clip_string(),
   ))
 
-  clip.command(fn(a) { a })
-  |> clip.opt(
-    opt.new(name)
-    |> opt.map(string.uppercase),
-  )
-  |> clip.run(["--" <> name, value])
-  |> should.equal(Ok(string.uppercase(value)))
+  let result =
+    clip.command(fn(a) { a })
+    |> clip.opt(
+      opt.new(name)
+      |> opt.map(string.uppercase),
+    )
+    |> clip.run(["--" <> name, value])
+
+  assert result == Ok(string.uppercase(value))
 }
 
 pub fn optional_test() {
@@ -69,11 +70,9 @@ pub fn optional_test() {
     clip.command(fn(a) { a })
     |> clip.opt(opt.new(name) |> opt.optional)
 
-  clip.run(command, ["--" <> name, value])
-  |> should.equal(Ok(Ok(value)))
+  assert clip.run(command, ["--" <> name, value]) == Ok(Ok(value))
 
-  clip.run(command, [])
-  |> should.equal(Ok(Error(Nil)))
+  assert clip.run(command, []) == Ok(Error(Nil))
 }
 
 pub fn default_test() {
@@ -87,11 +86,9 @@ pub fn default_test() {
     clip.command(fn(a) { a })
     |> clip.opt(opt.new(name) |> opt.default(default))
 
-  clip.run(command, ["--" <> name, value])
-  |> should.equal(Ok(value))
+  assert clip.run(command, ["--" <> name, value]) == Ok(value)
 
-  clip.run(command, [])
-  |> should.equal(Ok(default))
+  assert clip.run(command, []) == Ok(default)
 }
 
 pub fn int_test() {
@@ -100,10 +97,12 @@ pub fn int_test() {
     qcheck.small_non_negative_int(),
   ))
 
-  clip.command(fn(a) { a })
-  |> clip.opt(opt.new(name) |> opt.int)
-  |> clip.run(["--" <> name, int.to_string(value)])
-  |> should.equal(Ok(value))
+  let result =
+    clip.command(fn(a) { a })
+    |> clip.opt(opt.new(name) |> opt.int)
+    |> clip.run(["--" <> name, int.to_string(value)])
+
+  assert result == Ok(value)
 }
 
 pub fn float_test() {
@@ -112,8 +111,10 @@ pub fn float_test() {
     qcheck.float(),
   ))
 
-  clip.command(fn(a) { a })
-  |> clip.opt(opt.new(name) |> opt.float)
-  |> clip.run(["--" <> name, float.to_string(value)])
-  |> should.equal(Ok(value))
+  let result =
+    clip.command(fn(a) { a })
+    |> clip.opt(opt.new(name) |> opt.float)
+    |> clip.run(["--" <> name, float.to_string(value)])
+
+  assert result == Ok(value)
 }

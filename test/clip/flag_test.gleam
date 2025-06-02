@@ -1,6 +1,5 @@
 import clip
 import clip/flag
-import gleeunit/should
 import qcheck
 import test_helper/qcheck_util
 
@@ -11,11 +10,9 @@ pub fn flag_test() {
     clip.command(fn(a) { a })
     |> clip.flag(flag.new(value))
 
-  clip.run(command, ["--" <> value])
-  |> should.equal(Ok(True))
+  assert clip.run(command, ["--" <> value]) == Ok(True)
 
-  clip.run(command, [])
-  |> should.equal(Ok(False))
+  assert clip.run(command, []) == Ok(False)
 }
 
 pub fn short_test() {
@@ -25,9 +22,7 @@ pub fn short_test() {
     clip.command(fn(a) { a })
     |> clip.flag(flag.new("flag") |> flag.short(value))
 
-  clip.run(command, ["-" <> value])
-  |> should.equal(Ok(True))
+  assert clip.run(command, ["-" <> value]) == Ok(True)
 
-  clip.run(command, [])
-  |> should.equal(Ok(False))
+  assert clip.run(command, []) == Ok(False)
 }

@@ -4,7 +4,6 @@ import clip/flag
 import clip/opt
 import gleam/list
 import gleeunit
-import gleeunit/should
 import qcheck
 import test_helper/qcheck_util
 
@@ -35,8 +34,7 @@ pub fn complex_command_test() {
     |> clip.arg_many(arg.new("d"))
     |> clip.run(["--a", a, "--b", c, d, e, f])
 
-  result
-  |> should.equal(Ok(#(a, True, c, [d, e, f])))
+  assert result == Ok(#(a, True, c, [d, e, f]))
 }
 
 pub fn opt_and_flag_order_does_not_matter_test() {
@@ -61,8 +59,7 @@ pub fn opt_and_flag_order_does_not_matter_test() {
     |> clip.arg_many(arg.new("d"))
     |> clip.run(argv)
 
-  result
-  |> should.equal(Ok(#(a, True, c, [d, e, f])))
+  assert result == Ok(#(a, True, c, [d, e, f]))
 }
 
 pub fn arg_many_accepts_all_after_double_dash_test() {
@@ -77,8 +74,7 @@ pub fn arg_many_accepts_all_after_double_dash_test() {
     |> clip.arg_many(arg.new("b"))
     |> clip.run(["--a", first, "--", ..rest])
 
-  result
-  |> should.equal(Ok(#(first, rest)))
+  assert result == Ok(#(first, rest))
 }
 
 pub fn subcommands_test() {
@@ -91,17 +87,11 @@ pub fn subcommands_test() {
       #("c", clip.command(fn(a) { a }) |> clip.opt(opt.new("c"))),
     ])
 
-  command
-  |> clip.run(["a", "--a", val])
-  |> should.equal(Ok(val))
+  assert clip.run(command, ["a", "--a", val]) == Ok(val)
 
-  command
-  |> clip.run(["b", "--b", val])
-  |> should.equal(Ok(val))
+  assert clip.run(command, ["b", "--b", val]) == Ok(val)
 
-  command
-  |> clip.run(["c", "--c", val])
-  |> should.equal(Ok(val))
+  assert clip.run(command, ["c", "--c", val]) == Ok(val)
 }
 
 pub fn subcommands_with_default_test() {
@@ -116,15 +106,9 @@ pub fn subcommands_with_default_test() {
       clip.command(fn(a) { a }) |> clip.opt(opt.new("c")),
     )
 
-  command
-  |> clip.run(["a", "--a", val])
-  |> should.equal(Ok(val))
+  assert clip.run(command, ["a", "--a", val]) == Ok(val)
 
-  command
-  |> clip.run(["b", "--b", val])
-  |> should.equal(Ok(val))
+  assert clip.run(command, ["b", "--b", val]) == Ok(val)
 
-  command
-  |> clip.run(["--c", val])
-  |> should.equal(Ok(val))
+  assert clip.run(command, ["--c", val]) == Ok(val)
 }

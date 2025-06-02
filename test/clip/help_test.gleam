@@ -3,7 +3,6 @@ import clip/arg
 import clip/flag
 import clip/help
 import clip/opt
-import gleeunit/should
 
 pub fn complex_command_help_test() {
   let expected =
@@ -39,6 +38,5 @@ Options:
     |> clip.help(help.simple("complex", "complex command"))
     |> clip.run(["--help"])
 
-  result
-  |> should.equal(Error(expected))
+  assert result == Error(expected)
 }
