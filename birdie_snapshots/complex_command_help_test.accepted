@@ -1,0 +1,25 @@
+---
+version: 1.4.1
+title: complex_command_help_test
+file: ./test/clip/help_test.gleam
+test_name: complex_command_help_test
+---
+complex
+
+  complex command
+
+Usage:
+
+  complex [OPTIONS] C [D...] E...
+
+Arguments:
+
+  C          	
+  [D...]     	Zero or more
+  E...       	One or more
+
+Options:
+
+  (--a A)    	
+  [--b]      	
+  [--help,-h]	Print this help

@@ -1,3 +1,4 @@
+import birdie
 import clip
 import clip/arg
 import clip/flag
@@ -5,28 +6,7 @@ import clip/help
 import clip/opt
 
 pub fn complex_command_help_test() {
-  let expected =
-    "complex
-
-  complex command
-
-Usage:
-
-  complex [OPTIONS] C [D...] E...
-
-Arguments:
-
-  C          \t
-  [D...]     \tZero or more
-  E...       \tOne or more
-
-Options:
-
-  (--a A)    \t
-  [--b]      \t
-  [--help,-h]\tPrint this help"
-
-  let result =
+  let assert Error(help) =
     clip.command(fn(a) {
       fn(b) { fn(c) { fn(d) { fn(e) { #(a, b, c, d, e) } } } }
     })
@@ -38,5 +18,5 @@ Options:
     |> clip.help(help.simple("complex", "complex command"))
     |> clip.run(["--help"])
 
-  assert result == Error(expected)
+  birdie.snap(help, title: "complex_command_help_test")
 }
