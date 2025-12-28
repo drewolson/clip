@@ -86,7 +86,8 @@ steps:
    parsed options. This function can be built using the
    [parameter syntax](https://hexdocs.pm/clip/clip.html#parameter).
    Alternatively, you can directly provide a curried function, meaning a two argument
-   function looks like `fn(a) { fn(b) { do_stuff(a, b) } }`.
+   function looks like `fn(a) { fn(b) { do_stuff(a, b) } }`. You can also use
+   the pre-built commands `clip.command1`, `clip.command2`, etc.
 2. Next, use the `|>` operator along with `clip.opt`, `clip.flag`, and
    `clip.arg` to parse command line arguments and provide them as parameters to
    the function given to `clip.command`.

@@ -92,6 +92,67 @@ pub fn command(f: fn(a) -> b) -> Command(fn(a) -> b) {
   return(f)
 }
 
+/// A pre-built command that takes a single argument and returns its value.
+///
+/// ```gleam
+/// clip.command1()
+/// |> clip.opt(opt.new("first"))
+/// |> clip.run(["--first", "foo"])
+///
+/// // Ok("foo")
+/// ```
+pub fn command1() -> Command(fn(a) -> a) {
+  return(fn(a) { a })
+}
+
+/// A pre-built command that takes two arguments and returns a tuple of their
+/// values.
+///
+/// ```gleam
+/// clip.command2()
+/// |> clip.opt(opt.new("first"))
+/// |> clip.opt(opt.new("second"))
+/// |> clip.run(["--first", "foo", "--second", "bar"])
+///
+/// // Ok(#("foo", "bar"))
+/// ```
+pub fn command2() -> Command(fn(a) -> fn(b) -> #(a, b)) {
+  return(fn(a) { fn(b) { #(a, b) } })
+}
+
+/// A pre-built command that takes three arguments and returns a tuple of their
+/// values.
+///
+/// ```gleam
+/// clip.command3()
+/// |> clip.opt(opt.new("first"))
+/// |> clip.opt(opt.new("second"))
+/// |> clip.opt(opt.new("third"))
+/// |> clip.run(["--first", "foo", "--second", "bar", "--third", "baz"])
+///
+/// // Ok(#("foo", "bar", "baz"))
+/// ```
+pub fn command3() -> Command(fn(a) -> fn(b) -> fn(c) -> #(a, b, c)) {
+  return(fn(a) { fn(b) { fn(c) { #(a, b, c) } } })
+}
+
+/// A pre-built command that takes four arguments and returns a tuple of their
+/// values.
+///
+/// ```gleam
+/// clip.command4()
+/// |> clip.opt(opt.new("first"))
+/// |> clip.opt(opt.new("second"))
+/// |> clip.opt(opt.new("third"))
+/// |> clip.opt(opt.new("fourth"))
+/// |> clip.run(["--first", "foo", "--second", "bar", "--third", "baz", "--fourth", "qux"])
+///
+/// // Ok(#("foo", "bar", "baz", "qux"))
+/// ```
+pub fn command4() -> Command(fn(a) -> fn(b) -> fn(c) -> fn(d) -> #(a, b, c, d)) {
+  return(fn(a) { fn(b) { fn(c) { fn(d) { #(a, b, c, d) } } } })
+}
+
 /// Creates a `Command` that always produces `Error(message)` when run.
 pub fn fail(message: String) -> Command(a) {
   Command(info: arg_info.empty(), help: None, f: fn(_args) { Error(message) })

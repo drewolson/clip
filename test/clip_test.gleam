@@ -77,6 +77,68 @@ pub fn arg_many_accepts_all_after_double_dash_test() {
   assert result == Ok(#(first, rest))
 }
 
+pub fn command1_test() {
+  use a <- qcheck.given(qcheck_util.clip_string())
+
+  let result =
+    clip.command1()
+    |> clip.opt(opt.new("a"))
+    |> clip.run(["--a", a])
+
+  assert result == Ok(a)
+}
+
+pub fn command2_test() {
+  use #(a, b) <- qcheck.given(qcheck.tuple2(
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+  ))
+
+  let result =
+    clip.command2()
+    |> clip.opt(opt.new("a"))
+    |> clip.opt(opt.new("b"))
+    |> clip.run(["--a", a, "--b", b])
+
+  assert result == Ok(#(a, b))
+}
+
+pub fn command3_test() {
+  use #(a, b, c) <- qcheck.given(qcheck.tuple3(
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+  ))
+
+  let result =
+    clip.command3()
+    |> clip.opt(opt.new("a"))
+    |> clip.opt(opt.new("b"))
+    |> clip.opt(opt.new("c"))
+    |> clip.run(["--a", a, "--b", b, "--c", c])
+
+  assert result == Ok(#(a, b, c))
+}
+
+pub fn command4_test() {
+  use #(a, b, c, d) <- qcheck.given(qcheck.tuple4(
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+    qcheck_util.clip_string(),
+  ))
+
+  let result =
+    clip.command4()
+    |> clip.opt(opt.new("a"))
+    |> clip.opt(opt.new("b"))
+    |> clip.opt(opt.new("c"))
+    |> clip.opt(opt.new("d"))
+    |> clip.run(["--a", a, "--b", b, "--c", c, "--d", d])
+
+  assert result == Ok(#(a, b, c, d))
+}
+
 pub fn subcommands_test() {
   use val <- qcheck.given(qcheck_util.clip_string())
 

@@ -1,3 +1,7 @@
+# 1.1.0
+
+* Add `clip.command1`, `clip.command2`, `clip.command3`, and `clip.command4`.
+
 # 1.0.0
 
 * First stable release.
