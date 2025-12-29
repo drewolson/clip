@@ -29,19 +29,19 @@ fn pos_info(arg: Arg(a)) -> PositionalInfo {
   )
 }
 
-/// Used internally, not intended for direct usage.
+@internal
 pub fn to_arg_info(arg: Arg(a)) -> ArgInfo {
   ArgInfo(..arg_info.empty(), positional: [pos_info(arg)])
 }
 
-/// Used internally, not intended for direct usage.
+@internal
 pub fn to_arg_info_many(arg: Arg(a)) -> ArgInfo {
   ArgInfo(..arg_info.empty(), positional: [
     PositionalInfo(..pos_info(arg), repeat: ManyRepeat),
   ])
 }
 
-/// Used internally, not intended for direct usage.
+@internal
 pub fn to_arg_info_many1(arg: Arg(a)) -> ArgInfo {
   ArgInfo(..arg_info.empty(), positional: [
     PositionalInfo(..pos_info(arg), repeat: Many1Repeat),
@@ -169,8 +169,7 @@ fn run_aux(
   }
 }
 
-/// Run an `Arg(a)` against a list of arguments. Used internally by `clip`, not
-/// intended for direct usage.
+@internal
 pub fn run(
   arg: Arg(a),
   args: List(String),

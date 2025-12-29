@@ -18,7 +18,7 @@ pub opaque type Opt(a) {
   )
 }
 
-/// Used internally, not intended for direct usage.
+@internal
 pub fn to_arg_info(opt: Opt(a)) -> ArgInfo {
   ArgInfo(..arg_info.empty(), named: [
     NamedInfo(
@@ -140,8 +140,7 @@ pub fn float(opt: Opt(String)) -> Opt(Float) {
   })
 }
 
-/// Run an `Opt(a)` against a list of arguments. Used internally by `clip`, not
-/// intended for direct usage.
+@internal
 pub fn run(
   opt: Opt(a),
   args: List(String),

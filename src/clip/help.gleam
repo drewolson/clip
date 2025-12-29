@@ -6,8 +6,7 @@ pub opaque type Help {
   Help(f: fn(ArgInfo) -> String)
 }
 
-/// Produce a `String` from a `Help` and an `ArgInfo`. Used internally by
-/// `clip`, not intended for direct usage.
+@internal
 pub fn run(help: Help, arg_info: ArgInfo) -> String {
   help.f(arg_info)
 }
