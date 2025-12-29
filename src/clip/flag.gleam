@@ -10,7 +10,7 @@ pub opaque type Flag {
   Flag(name: String, help: Option(String), short: Option(String))
 }
 
-/// Used internally, not intended for direct usage.
+@internal
 pub fn to_arg_info(flag: Flag) -> ArgInfo {
   ArgInfo(..arg_info.empty(), flags: [
     FlagInfo(name: flag.name, short: flag.short, help: flag.help),
@@ -42,8 +42,7 @@ pub fn short(flag: Flag, short: String) -> Flag {
   Flag(..flag, short: Some(short))
 }
 
-/// Run a `Flag` against a list of arguments. Used internally by `clip`, not
-/// intended for direct usage.
+@internal
 pub fn run(
   flag: Flag,
   args: List(String),
