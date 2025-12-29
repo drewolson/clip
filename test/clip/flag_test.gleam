@@ -1,10 +1,10 @@
 import clip
 import clip/flag
 import qcheck
-import test_helper/qcheck_util
+import test_helper/gen
 
 pub fn flag_test() {
-  use value <- qcheck.given(qcheck_util.clip_string())
+  use value <- qcheck.given(gen.clip_string())
 
   let command =
     clip.command(fn(a) { a })
@@ -16,7 +16,7 @@ pub fn flag_test() {
 }
 
 pub fn short_test() {
-  use value <- qcheck.given(qcheck_util.clip_string())
+  use value <- qcheck.given(gen.clip_string())
 
   let command =
     clip.command(fn(a) { a })

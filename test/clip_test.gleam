@@ -5,7 +5,7 @@ import clip/opt
 import gleam/list
 import gleeunit
 import qcheck
-import test_helper/qcheck_util
+import test_helper/gen
 
 pub fn main() {
   gleeunit.main()
@@ -13,11 +13,11 @@ pub fn main() {
 
 pub fn complex_command_test() {
   use #(a, c, d, e, f) <- qcheck.given(qcheck.tuple5(
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
   ))
 
   let result =
@@ -39,11 +39,11 @@ pub fn complex_command_test() {
 
 pub fn opt_and_flag_order_does_not_matter_test() {
   use #(a, c, d, e, f) <- qcheck.given(qcheck.tuple5(
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
   ))
 
   let argv =
@@ -64,7 +64,7 @@ pub fn opt_and_flag_order_does_not_matter_test() {
 
 pub fn arg_many_accepts_all_after_double_dash_test() {
   use #(first, rest) <- qcheck.given(qcheck.tuple2(
-    qcheck_util.clip_string(),
+    gen.clip_string(),
     qcheck.generic_list(qcheck.non_empty_string(), qcheck.bounded_int(2, 5)),
   ))
 
@@ -78,7 +78,7 @@ pub fn arg_many_accepts_all_after_double_dash_test() {
 }
 
 pub fn command1_test() {
-  use a <- qcheck.given(qcheck_util.clip_string())
+  use a <- qcheck.given(gen.clip_string())
 
   let result =
     clip.command1()
@@ -90,8 +90,8 @@ pub fn command1_test() {
 
 pub fn command2_test() {
   use #(a, b) <- qcheck.given(qcheck.tuple2(
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
   ))
 
   let result =
@@ -105,9 +105,9 @@ pub fn command2_test() {
 
 pub fn command3_test() {
   use #(a, b, c) <- qcheck.given(qcheck.tuple3(
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
   ))
 
   let result =
@@ -122,10 +122,10 @@ pub fn command3_test() {
 
 pub fn command4_test() {
   use #(a, b, c, d) <- qcheck.given(qcheck.tuple4(
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
   ))
 
   let result =
@@ -140,7 +140,7 @@ pub fn command4_test() {
 }
 
 pub fn subcommands_test() {
-  use val <- qcheck.given(qcheck_util.clip_string())
+  use val <- qcheck.given(gen.clip_string())
 
   let command =
     clip.subcommands([
@@ -157,7 +157,7 @@ pub fn subcommands_test() {
 }
 
 pub fn subcommands_with_default_test() {
-  use val <- qcheck.given(qcheck_util.clip_string())
+  use val <- qcheck.given(gen.clip_string())
 
   let command =
     clip.subcommands_with_default(

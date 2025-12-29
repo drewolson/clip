@@ -4,10 +4,10 @@ import gleam/float
 import gleam/int
 import gleam/string
 import qcheck
-import test_helper/qcheck_util
+import test_helper/gen
 
 pub fn arg_test() {
-  use value <- qcheck.given(qcheck_util.clip_string())
+  use value <- qcheck.given(gen.clip_string())
 
   let command =
     clip.command(fn(a) { a })
@@ -38,7 +38,7 @@ pub fn try_map_test() {
 }
 
 pub fn map_test() {
-  use value <- qcheck.given(qcheck_util.clip_string())
+  use value <- qcheck.given(gen.clip_string())
 
   let result =
     clip.command(fn(a) { a })
@@ -49,7 +49,7 @@ pub fn map_test() {
 }
 
 pub fn optional_test() {
-  use value <- qcheck.given(qcheck_util.clip_string())
+  use value <- qcheck.given(gen.clip_string())
 
   let command =
     clip.command(fn(a) { a })
@@ -62,8 +62,8 @@ pub fn optional_test() {
 
 pub fn default_test() {
   use #(value, default) <- qcheck.given(qcheck.tuple2(
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
   ))
 
   let command =

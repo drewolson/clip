@@ -4,12 +4,12 @@ import gleam/float
 import gleam/int
 import gleam/string
 import qcheck
-import test_helper/qcheck_util
+import test_helper/gen
 
 pub fn opt_test() {
   use #(name, value) <- qcheck.given(qcheck.tuple2(
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
   ))
 
   let command =
@@ -23,7 +23,7 @@ pub fn opt_test() {
 
 pub fn try_map_test() {
   use #(name, value) <- qcheck.given(qcheck.tuple2(
-    qcheck_util.clip_string(),
+    gen.clip_string(),
     qcheck.small_non_negative_int(),
   ))
 
@@ -45,8 +45,8 @@ pub fn try_map_test() {
 
 pub fn map_test() {
   use #(name, value) <- qcheck.given(qcheck.tuple2(
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
   ))
 
   let result =
@@ -62,8 +62,8 @@ pub fn map_test() {
 
 pub fn optional_test() {
   use #(name, value) <- qcheck.given(qcheck.tuple2(
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
   ))
 
   let command =
@@ -77,9 +77,9 @@ pub fn optional_test() {
 
 pub fn default_test() {
   use #(name, value, default) <- qcheck.given(qcheck.tuple3(
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
-    qcheck_util.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
   ))
 
   let command =
@@ -93,7 +93,7 @@ pub fn default_test() {
 
 pub fn int_test() {
   use #(name, value) <- qcheck.given(qcheck.tuple2(
-    qcheck_util.clip_string(),
+    gen.clip_string(),
     qcheck.small_non_negative_int(),
   ))
 
@@ -107,7 +107,7 @@ pub fn int_test() {
 
 pub fn float_test() {
   use #(name, value) <- qcheck.given(qcheck.tuple2(
-    qcheck_util.clip_string(),
+    gen.clip_string(),
     qcheck.float(),
   ))
 
