@@ -196,8 +196,7 @@ fn run_many_aux(
   }
 }
 
-/// Run an `Arg(a)` against a list of arguments producing zero or more results.
-/// Used internally by `clip`, not intended for direct usage.
+@internal
 pub fn run_many(
   arg: Arg(a),
   args: List(String),
@@ -205,8 +204,7 @@ pub fn run_many(
   run_many_aux([], arg, args)
 }
 
-/// Run an `Arg(a)` against a list of arguments producing one or more results.
-/// Used internally by `clip`, not intended for direct usage.
+@internal
 pub fn run_many1(
   arg: Arg(a),
   args: List(String),
