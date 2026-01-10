@@ -3,6 +3,6 @@
     "build": "gleam build && esbuild ./priv/cli.mjs --bundle --outdir=dist"
   },
   "dependencies": {
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.27.2"
   }
 }
