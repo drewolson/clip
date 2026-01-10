@@ -1,3 +1,7 @@
+# 1.2.0
+
+* Add `clip.parse` to allow accessing unparsed arguments.
+
 # 1.1.1
 
 * Ensure `clip.arg_many` and `clip.arg_many1` do not leave `--` in argument

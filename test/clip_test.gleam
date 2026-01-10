@@ -37,6 +37,53 @@ pub fn complex_command_test() {
   assert result == Ok(#(a, True, c, [d, e, f]))
 }
 
+pub fn complex_parse_test() {
+  use #(a, c, d, e, f) <- qcheck.given(qcheck.tuple5(
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+  ))
+
+  let result =
+    clip.command({
+      use a <- clip.parameter
+      use b <- clip.parameter
+      use c <- clip.parameter
+      use d <- clip.parameter
+      #(a, b, c, d)
+    })
+    |> clip.opt(opt.new("a"))
+    |> clip.flag(flag.new("b"))
+    |> clip.arg(arg.new("c"))
+    |> clip.arg_many(arg.new("d"))
+    |> clip.parse(["--a", a, "--b", c, d, e, f])
+
+  assert result == Ok(#(#(a, True, c, [d, e, f]), []))
+}
+
+pub fn parse_with_unparsed_arguments_test() {
+  use #(a, b, c) <- qcheck.given(qcheck.tuple3(
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+  ))
+
+  let result =
+    clip.command({
+      use a <- clip.parameter
+      use b <- clip.parameter
+
+      #(a, b)
+    })
+    |> clip.opt(opt.new("a"))
+    |> clip.opt(opt.new("b"))
+    |> clip.parse(["--a", a, "--b", b, "--c", c])
+
+  assert result == Ok(#(#(a, b), ["--c", c]))
+}
+
 pub fn opt_and_flag_order_does_not_matter_test() {
   use #(a, c, d, e, f) <- qcheck.given(qcheck.tuple5(
     gen.clip_string(),

@@ -270,9 +270,9 @@ fn run_subcommands(
 ) -> Result(#(a, List(String)), String) {
   case subcommands, args {
     [#(name, command), ..], [head, ..rest] if name == head ->
-      run_aux(command, rest)
+      parse(command, rest)
     [_, ..rest], _ -> run_subcommands(rest, default, args)
-    [], _ -> run_aux(default, args)
+    [], _ -> parse(default, args)
   }
 }
 
@@ -326,7 +326,14 @@ fn wrap_help(
   }
 }
 
-fn run_aux(
+/// Use a `Command(a)` to parse a list of command line options. If parsing is
+/// successful, an `Ok(#(a, List(String)))` is returned containing the parsed
+/// value and any left over options. If parsing fails, an `Error(String)` is
+/// returned. The `Error` value is intended to be printed to the user.
+///
+/// You should use the `clip.run` function instead of `clip.parse`, unless you
+/// need to deal with left over options after successful parsing.
+pub fn parse(
   command: Command(a),
   args: List(String),
 ) -> Result(#(a, List(String)), String) {
@@ -338,10 +345,11 @@ fn run_aux(
   f(args)
 }
 
-/// Run a command. Running a `Command(a)` will return either `Ok(a)` or an
-/// `Error(String)`. The `Error` value is intended to be printed to the user.
+/// Run a command with a list of command line options. Running a `Command(a)`
+/// will return either `Ok(a)` or an `Error(String)`. The `Error` value is
+/// intended to be printed to the user.
 pub fn run(command: Command(a), args: List(String)) -> Result(a, String) {
-  case run_aux(command, args) {
+  case parse(command, args) {
     Ok(#(a, _)) -> Ok(a)
     Error(e) -> Error(e)
   }
