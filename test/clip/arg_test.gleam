@@ -96,3 +96,16 @@ pub fn float_test() {
 
   assert result == Ok(i)
 }
+
+pub fn run_many_does_not_leave_double_dash_test() {
+  use cli_args <- qcheck.given(qcheck.generic_list(
+    qcheck.non_empty_string(),
+    qcheck.bounded_int(2, 5),
+  ))
+
+  let arg = arg.new("foo")
+
+  let result = arg.run_many(arg, ["--", ..cli_args])
+
+  assert result == Ok(#(cli_args, []))
+}

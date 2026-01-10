@@ -187,7 +187,11 @@ fn run_many_aux(
     _ ->
       case run(arg, args) {
         Ok(#(a, rest)) -> run_many_aux([a, ..acc], arg, rest)
-        Error(_) -> Ok(#(list.reverse(acc), args))
+        Error(_) -> {
+          let clean_args = list.drop_while(args, fn(a) { a == "--" })
+
+          Ok(#(list.reverse(acc), clean_args))
+        }
       }
   }
 }
