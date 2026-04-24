@@ -236,7 +236,10 @@ pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
 /// `arg_many1` will not attempt to parse options starting with `-` unless the
 /// special `--` value has been previously passed or the option is a negative
 /// integer or float.
-pub fn arg_many1(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
+pub fn arg_many1(
+  command: Command(fn(List(a)) -> b),
+  arg: Arg(a),
+) -> Command(b) {
   apply(
     command,
     Command(info: arg.to_arg_info_many1(arg), help: None, f: arg.run_many1(
