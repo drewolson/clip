@@ -150,6 +150,8 @@ pub fn run(
   let names = short_name |> option.map(fn(s) { [s] }) |> option.unwrap([])
   let names = [long_name, ..names] |> string.join(", ")
   case args, opt.default {
+    ["--", ..], Some(v) -> Ok(#(v, args))
+    ["--", ..], None -> Error("missing required arg: " <> names)
     [key, val, ..rest], _ if key == long_name || Some(key) == short_name -> {
       use a <- result.try(opt.try_map(val))
       Ok(#(a, rest))

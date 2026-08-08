@@ -124,6 +124,111 @@ pub fn arg_many_accepts_all_after_double_dash_test() {
   assert result == Ok(#(first, rest))
 }
 
+pub fn opt_declared_after_arg_does_not_capture_positional_value_test() {
+  use #(name, named, positional) <- qcheck.given(qcheck.tuple3(
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+  ))
+
+  let result =
+    clip.command2()
+    |> clip.arg(arg.new("positional"))
+    |> clip.opt(opt.new(name))
+    |> clip.run(["--" <> name, named, positional])
+
+  assert result == Ok(#(positional, named))
+}
+
+pub fn short_opt_declared_after_arg_does_not_capture_positional_value_test() {
+  use #(short, named, positional) <- qcheck.given(qcheck.tuple3(
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+  ))
+
+  let result =
+    clip.command2()
+    |> clip.arg(arg.new("positional"))
+    |> clip.opt(opt.new("name") |> opt.short(short))
+    |> clip.run(["-" <> short, named, positional])
+
+  assert result == Ok(#(positional, named))
+}
+
+pub fn flag_declared_after_arg_does_not_capture_positional_value_test() {
+  use #(name, positional) <- qcheck.given(qcheck.tuple2(
+    gen.clip_string(),
+    gen.clip_string(),
+  ))
+
+  let result =
+    clip.command2()
+    |> clip.arg(arg.new("positional"))
+    |> clip.flag(flag.new(name))
+    |> clip.run(["--" <> name, positional])
+
+  assert result == Ok(#(positional, True))
+}
+
+pub fn opt_declared_after_arg_many_does_not_capture_positional_values_test() {
+  use #(name, named, positional) <- qcheck.given(qcheck.tuple3(
+    gen.clip_string(),
+    gen.clip_string(),
+    qcheck.generic_list(gen.clip_string(), qcheck.bounded_int(1, 5)),
+  ))
+
+  let result =
+    clip.command2()
+    |> clip.arg_many(arg.new("positional"))
+    |> clip.opt(opt.new(name))
+    |> clip.run(["--" <> name, named, ..positional])
+
+  assert result == Ok(#(positional, named))
+}
+
+pub fn named_args_are_positional_after_double_dash_test() {
+  use #(named, positional) <- qcheck.given(qcheck.tuple2(
+    gen.clip_string(),
+    gen.clip_string(),
+  ))
+
+  let args = ["--name", named, "--flag", positional]
+  let result =
+    clip.command3()
+    |> clip.opt(opt.new("name") |> opt.default("default"))
+    |> clip.flag(flag.new("flag"))
+    |> clip.arg_many(arg.new("rest"))
+    |> clip.run(["--", ..args])
+
+  assert result == Ok(#("default", False, args))
+}
+
+pub fn parse_does_not_leave_double_dash_test() {
+  use positional <- qcheck.given(gen.clip_string())
+
+  let result =
+    clip.command1()
+    |> clip.arg(arg.new("positional"))
+    |> clip.parse(["--", "-" <> positional])
+
+  assert result == Ok(#("-" <> positional, []))
+}
+
+pub fn unknown_named_arg_is_left_unparsed_test() {
+  use #(name, positional) <- qcheck.given(qcheck.tuple2(
+    gen.clip_string(),
+    gen.clip_string(),
+  ))
+
+  let result =
+    clip.command1()
+    |> clip.arg(arg.new("positional"))
+    |> clip.parse(["--" <> name, positional])
+
+  assert result == Ok(#(positional, ["--" <> name]))
+}
+
 pub fn command1_test() {
   use a <- qcheck.given(gen.clip_string())
 

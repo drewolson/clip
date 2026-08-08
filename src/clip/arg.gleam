@@ -144,24 +144,51 @@ fn not_num(str: String) -> Bool {
   !result
 }
 
+fn is_named(info: ArgInfo, key: String) -> Bool {
+  list.any(info.named, fn(named) {
+    key == "--" <> named.name
+    || Some(key) == option.map(named.short, fn(short) { "-" <> short })
+  })
+}
+
+fn is_flag(info: ArgInfo, key: String) -> Bool {
+  list.any(info.flags, fn(flag) {
+    key == "--" <> flag.name
+    || Some(key) == option.map(flag.short, fn(short) { "-" <> short })
+  })
+}
+
 fn run_aux(
   strict: Bool,
   arg: Arg(a),
   args: List(String),
+  info: ArgInfo,
 ) -> Result(#(a, List(String)), String) {
   case args, arg.default {
     ["--", ..rest], _ ->
-      run_aux(False, arg, rest)
+      run_aux(False, arg, rest, info)
       |> result.map(fn(v) { #(v.0, ["--", ..v.1]) })
     [head, ..rest], _ -> {
-      case strict && string.starts_with(head, "-") && not_num(head) {
-        True ->
-          run_aux(strict, arg, rest)
+      case strict && is_named(info, head), strict && is_flag(info, head), rest {
+        True, _, [value, ..next] ->
+          run_aux(strict, arg, next, info)
+          |> result.map(fn(v) { #(v.0, [head, value, ..v.1]) })
+        True, _, [] ->
+          run_aux(strict, arg, [], info)
           |> result.map(fn(v) { #(v.0, [head, ..v.1]) })
-        False -> {
-          use a <- result.try(arg.try_map(head))
-          Ok(#(a, rest))
-        }
+        False, True, _ ->
+          run_aux(strict, arg, rest, info)
+          |> result.map(fn(v) { #(v.0, [head, ..v.1]) })
+        False, False, _ ->
+          case strict && string.starts_with(head, "-") && not_num(head) {
+            True ->
+              run_aux(strict, arg, rest, info)
+              |> result.map(fn(v) { #(v.0, [head, ..v.1]) })
+            False -> {
+              use a <- result.try(arg.try_map(head))
+              Ok(#(a, rest))
+            }
+          }
       }
     }
     [], Some(v) -> Ok(#(v, []))
@@ -174,19 +201,29 @@ pub fn run(
   arg: Arg(a),
   args: List(String),
 ) -> Result(#(a, List(String)), String) {
-  run_aux(True, arg, args)
+  run_aux(True, arg, args, arg_info.empty())
+}
+
+@internal
+pub fn run_with_info(
+  arg: Arg(a),
+  args: List(String),
+  info: ArgInfo,
+) -> Result(#(a, List(String)), String) {
+  run_aux(True, arg, args, info)
 }
 
 fn run_many_aux(
   acc: List(a),
   arg: Arg(a),
   args: List(String),
+  info: ArgInfo,
 ) -> Result(#(List(a), List(String)), String) {
   case args {
     [] -> Ok(#(list.reverse(acc), []))
     _ ->
-      case run(arg, args) {
-        Ok(#(a, rest)) -> run_many_aux([a, ..acc], arg, rest)
+      case run_with_info(arg, args, info) {
+        Ok(#(a, rest)) -> run_many_aux([a, ..acc], arg, rest, info)
         Error(_) -> {
           let clean_args = list.drop_while(args, fn(a) { a == "--" })
 
@@ -201,7 +238,16 @@ pub fn run_many(
   arg: Arg(a),
   args: List(String),
 ) -> Result(#(List(a), List(String)), String) {
-  run_many_aux([], arg, args)
+  run_many_aux([], arg, args, arg_info.empty())
+}
+
+@internal
+pub fn run_many_with_info(
+  arg: Arg(a),
+  args: List(String),
+  info: ArgInfo,
+) -> Result(#(List(a), List(String)), String) {
+  run_many_aux([], arg, args, info)
 }
 
 @internal
@@ -209,7 +255,16 @@ pub fn run_many1(
   arg: Arg(a),
   args: List(String),
 ) -> Result(#(List(a), List(String)), String) {
-  use #(vs, rest) <- result.try(run_many_aux([], arg, args))
+  run_many1_with_info(arg, args, arg_info.empty())
+}
+
+@internal
+pub fn run_many1_with_info(
+  arg: Arg(a),
+  args: List(String),
+  info: ArgInfo,
+) -> Result(#(List(a), List(String)), String) {
+  use #(vs, rest) <- result.try(run_many_aux([], arg, args, info))
   case vs {
     [] -> Error("must provide at least one valid value for: " <> arg.name)
     _ -> Ok(#(vs, rest))

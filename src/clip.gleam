@@ -13,7 +13,9 @@ pub opaque type Command(a) {
   Command(
     info: ArgInfo,
     help: Option(Help),
-    f: fn(List(String)) -> Result(#(a, List(String)), String),
+    // Positional parsers use the complete command info to distinguish option
+    // values from positional arguments, regardless of parser declaration order.
+    f: fn(List(String), ArgInfo) -> Result(#(a, List(String)), String),
   )
 }
 
@@ -30,7 +32,9 @@ pub opaque type Command(a) {
 /// See the [subcommand example](https://github.com/drewolson/clip/tree/main/examples/subcommand)
 /// for idiomatic usage of `return`.
 pub fn return(val: a) -> Command(a) {
-  Command(info: arg_info.empty(), help: None, f: fn(args) { Ok(#(val, args)) })
+  Command(info: arg_info.empty(), help: None, f: fn(args, _info) {
+    Ok(#(val, args))
+  })
 }
 
 /// The `parameter` function provides an alternative syntax for building curried
@@ -64,9 +68,9 @@ pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
   Command(
     info: arg_info.merge(mf.info, ma.info),
     help: option.or(mf.help, ma.help),
-    f: fn(args) {
-      use #(f, args1) <- result.try(mf.f(args))
-      use #(a, args2) <- result.try(ma.f(args1))
+    f: fn(args, info) {
+      use #(f, args1) <- result.try(mf.f(args, info))
+      use #(a, args2) <- result.try(ma.f(args1, info))
       Ok(#(f(a), args2))
     },
   )
@@ -155,7 +159,9 @@ pub fn command4() -> Command(fn(a) -> fn(b) -> fn(c) -> fn(d) -> #(a, b, c, d)) 
 
 /// Creates a `Command` that always produces `Error(message)` when run.
 pub fn fail(message: String) -> Command(a) {
-  Command(info: arg_info.empty(), help: None, f: fn(_args) { Error(message) })
+  Command(info: arg_info.empty(), help: None, f: fn(_args, _info) {
+    Error(message)
+  })
 }
 
 /// Parse an option built using the `clip/opt` module and provide it to a
@@ -171,7 +177,9 @@ pub fn fail(message: String) -> Command(a) {
 pub fn opt(command: Command(fn(a) -> b), opt: Opt(a)) -> Command(b) {
   apply(
     command,
-    Command(info: opt.to_arg_info(opt), help: None, f: opt.run(opt, _)),
+    Command(info: opt.to_arg_info(opt), help: None, f: fn(args, _info) {
+      opt.run(opt, args)
+    }),
   )
 }
 
@@ -192,7 +200,9 @@ pub fn opt(command: Command(fn(a) -> b), opt: Opt(a)) -> Command(b) {
 pub fn arg(command: Command(fn(a) -> b), arg: Arg(a)) -> Command(b) {
   apply(
     command,
-    Command(info: arg.to_arg_info(arg), help: None, f: arg.run(arg, _)),
+    Command(info: arg.to_arg_info(arg), help: None, f: fn(args, info) {
+      arg.run_with_info(arg, args, info)
+    }),
   )
 }
 
@@ -216,7 +226,9 @@ pub fn arg(command: Command(fn(a) -> b), arg: Arg(a)) -> Command(b) {
 pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
   apply(
     command,
-    Command(info: arg.to_arg_info_many(arg), help: None, f: arg.run_many(arg, _)),
+    Command(info: arg.to_arg_info_many(arg), help: None, f: fn(args, info) {
+      arg.run_many_with_info(arg, args, info)
+    }),
   )
 }
 
@@ -242,10 +254,9 @@ pub fn arg_many1(
 ) -> Command(b) {
   apply(
     command,
-    Command(info: arg.to_arg_info_many1(arg), help: None, f: arg.run_many1(
-      arg,
-      _,
-    )),
+    Command(info: arg.to_arg_info_many1(arg), help: None, f: fn(args, info) {
+      arg.run_many1_with_info(arg, args, info)
+    }),
   )
 }
 
@@ -262,7 +273,9 @@ pub fn arg_many1(
 pub fn flag(command: Command(fn(Bool) -> b), flag: Flag) -> Command(b) {
   apply(
     command,
-    Command(info: flag.to_arg_info(flag), help: None, f: flag.run(flag, _)),
+    Command(info: flag.to_arg_info(flag), help: None, f: fn(args, _info) {
+      flag.run(flag, args)
+    }),
   )
 }
 
@@ -290,11 +303,9 @@ pub fn subcommands_with_default(
   let sub_arg_info = ArgInfo(..default.info, subcommands: sub_names)
   apply(
     return(fn(a) { a }),
-    Command(info: sub_arg_info, help: None, f: run_subcommands(
-      subcommands,
-      default,
-      _,
-    )),
+    Command(info: sub_arg_info, help: None, f: fn(args, _info) {
+      run_subcommands(subcommands, default, args)
+    }),
   )
 }
 
@@ -314,17 +325,17 @@ pub fn help(command: Command(a), help: Help) -> Command(a) {
 fn wrap_help(
   command: Command(a),
   help: Help,
-) -> fn(List(String)) -> Result(#(a, List(String)), String) {
+) -> fn(List(String), ArgInfo) -> Result(#(a, List(String)), String) {
   let help_info =
     ArgInfo(..arg_info.empty(), flags: [
       FlagInfo(name: "help", short: Some("h"), help: Some("Print this help")),
     ])
 
-  fn(args) {
+  fn(args, info) {
     case args {
       ["-h", ..] | ["--help", ..] ->
         Error(help.run(help, arg_info.merge(command.info, help_info)))
-      other -> command.f(other)
+      other -> command.f(other, info)
     }
   }
 }
@@ -345,7 +356,16 @@ pub fn parse(
     Some(help) -> wrap_help(command, help)
   }
 
-  f(args)
+  use #(value, rest) <- result.try(f(args, command.info))
+  Ok(#(value, remove_double_dash(rest)))
+}
+
+fn remove_double_dash(args: List(String)) -> List(String) {
+  case args {
+    [] -> []
+    ["--", ..rest] -> rest
+    [head, ..rest] -> [head, ..remove_double_dash(rest)]
+  }
 }
 
 /// Run a command with a list of command line options. Running a `Command(a)`

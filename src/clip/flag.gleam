@@ -51,6 +51,7 @@ pub fn run(
   let short_name = option.map(flag.short, fn(s) { "-" <> s })
   case args {
     [] -> Ok(#(False, []))
+    ["--", ..] -> Ok(#(False, args))
     [head, ..rest] if long_name == head || short_name == Some(head) -> {
       Ok(#(True, rest))
     }
