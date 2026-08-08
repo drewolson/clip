@@ -1,3 +1,11 @@
+# 1.2.1
+
+* Ensure positional arguments do not consume values belonging to named options,
+  regardless of the order in which parsers are added to a command.
+* Stop parsing named options and flags after the `--` delimiter.
+* Ensure `clip.parse` does not leave a consumed `--` delimiter in the unparsed
+  argument list.
+
 # 1.2.0
 
 * Add `clip.parse` to allow accessing unparsed arguments.
