@@ -24,5 +24,5 @@ Options:
 
 ```
 $ node dist/cli.js  --name Drew --age 42
-Person("Drew", 42)
+Person(name: "Drew", age: 42)
 ```
