@@ -62,7 +62,7 @@ pub fn parameter(f: fn(a) -> b) -> fn(a) -> b {
   f
 }
 
-/// Don't call this function directly. Rather, call `cli.opt`, `clip.flag`,
+/// Don't call this function directly. Rather, call `clip.opt`, `clip.flag`,
 /// `clip.arg`, `clip.arg_many`, or `clip.arg_many1`.
 pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
   Command(
@@ -76,7 +76,7 @@ pub fn apply(mf: Command(fn(a) -> b), ma: Command(a)) -> Command(b) {
   )
 }
 
-/// The `command` function is use to start building a parser. You provide a
+/// The `command` function is used to start building a parser. You provide a
 /// curried function and then provide arguments to be supplied to that function.
 ///
 /// ```gleam
@@ -165,7 +165,7 @@ pub fn fail(message: String) -> Command(a) {
 }
 
 /// Parse an option built using the `clip/opt` module and provide it to a
-/// `Command` function build using `clip.command()`
+/// `Command` function built using `clip.command()`
 ///
 /// ```gleam
 /// clip.command(fn(a) { a })
@@ -184,7 +184,7 @@ pub fn opt(command: Command(fn(a) -> b), opt: Opt(a)) -> Command(b) {
 }
 
 /// Parse the next positional argument built using the `clip/arg` module and
-/// provide it to a `Command` function build using `clip.command()`
+/// provide it to a `Command` function built using `clip.command()`
 ///
 /// ```gleam
 /// clip.command(fn(a) { a })
@@ -207,9 +207,9 @@ pub fn arg(command: Command(fn(a) -> b), arg: Arg(a)) -> Command(b) {
 }
 
 /// Parse the next zero or more positional arguments built using the `clip/arg`
-/// module and provide them as a `List` to a `Command` function build using
+/// module and provide them as a `List` to a `Command` function built using
 /// `clip.command()`. `arg_many` is greedy, parsing as many options as possible
-/// until parsing fails. If zero values are parsed successfuly, an empty
+/// until parsing fails. If zero values are parsed successfully, an empty
 /// `List` is provided.
 ///
 /// ```gleam
@@ -233,8 +233,8 @@ pub fn arg_many(command: Command(fn(List(a)) -> b), arg: Arg(a)) -> Command(b) {
 }
 
 /// Parse the next one or more positional arguments built using the `clip/arg`
-/// module and provide them as a `List` to a `Command` function build using
-/// `clip.command()`. `arg_many` is greedy, parsing as many options as possible
+/// module and provide them as a `List` to a `Command` function built using
+/// `clip.command()`. `arg_many1` is greedy, parsing as many options as possible
 /// until parsing fails. Parsing fails if zero values are parsed successfully.
 ///
 /// ```gleam
@@ -261,7 +261,7 @@ pub fn arg_many1(
 }
 
 /// Parse a flag built using the `clip/flag` module and provide it to a
-/// `Command` function build using `clip.command()`
+/// `Command` function built using `clip.command()`
 ///
 /// ```gleam
 /// clip.command(fn(a) { a })
@@ -322,6 +322,15 @@ pub fn help(command: Command(a), help: Help) -> Command(a) {
   Command(..command, help: Some(help))
 }
 
+fn has_help(args: List(String)) -> Bool {
+  case args {
+    [] -> False
+    ["--", ..] -> False
+    ["-h", ..] | ["--help", ..] -> True
+    [_, ..rest] -> has_help(rest)
+  }
+}
+
 fn wrap_help(
   command: Command(a),
   help: Help,
@@ -332,10 +341,15 @@ fn wrap_help(
     ])
 
   fn(args, info) {
-    case args {
-      ["-h", ..] | ["--help", ..] ->
-        Error(help.run(help, arg_info.merge(command.info, help_info)))
-      other -> command.f(other, info)
+    let should_help = case command.info.subcommands, args {
+      [_, ..], [head, ..] ->
+        !list.contains(command.info.subcommands, head) && has_help(args)
+      _, _ -> has_help(args)
+    }
+
+    case should_help {
+      True -> Error(help.run(help, arg_info.merge(command.info, help_info)))
+      False -> command.f(args, info)
     }
   }
 }

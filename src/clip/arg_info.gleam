@@ -81,12 +81,12 @@ fn flag_str(f_info: FlagInfo) -> String {
 
 fn pos_str(p_info: PositionalInfo) -> String {
   let name = string.uppercase(p_info.name)
-  let name = case p_info.repeat {
-    NoRepeat -> name
-    ManyRepeat -> "[" <> name <> "...]"
-    Many1Repeat -> name <> "..."
+  case p_info.repeat, p_info.default {
+    NoRepeat, Some(_) -> "[" <> name <> "]"
+    NoRepeat, None -> name
+    ManyRepeat, _ -> "[" <> name <> "...]"
+    Many1Repeat, _ -> name <> "..."
   }
-  name
 }
 
 /// Generate user-facing help text from `ArgInfo`, a name, and a description.
@@ -149,7 +149,8 @@ pub fn help_text(info: ArgInfo, name: String, description: String) -> String {
           p_info.help
           |> option.map(fn(h) { h <> " (one or more)" })
           |> option.unwrap("One or more")
-        NoRepeat, None -> p_info.help |> option.unwrap("")
+        NoRepeat, None | NoRepeat, Some("Error(Nil)") ->
+          p_info.help |> option.unwrap("")
         NoRepeat, Some(v) ->
           p_info.help
           |> option.map(fn(h) { h <> " (default: " <> v <> ")" })
@@ -170,7 +171,8 @@ pub fn help_text(info: ArgInfo, name: String, description: String) -> String {
         |> string.pad_end(max_size, " ")
 
       case n_info.default {
-        None -> names <> "\t" <> n_info.help |> option.unwrap("")
+        None | Some("Error(Nil)") ->
+          names <> "\t" <> n_info.help |> option.unwrap("")
         Some(v) ->
           names
           <> "\t"

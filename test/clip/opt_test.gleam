@@ -118,3 +118,60 @@ pub fn float_test() {
 
   assert result == Ok(value)
 }
+
+pub fn short_test() {
+  use #(name, short, value) <- qcheck.given(qcheck.tuple3(
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+  ))
+
+  let command =
+    clip.command(fn(a) { a })
+    |> clip.opt(opt.new(name) |> opt.short(short))
+
+  assert clip.run(command, ["-" <> short, value]) == Ok(value)
+}
+
+pub fn short_with_mapped_type_test() {
+  use #(name, short, value) <- qcheck.given(qcheck.tuple3(
+    gen.clip_string(),
+    gen.clip_string(),
+    qcheck.small_non_negative_int(),
+  ))
+
+  let command =
+    clip.command(fn(a) { a })
+    |> clip.opt(opt.new(name) |> opt.int |> opt.short(short))
+
+  assert clip.run(command, ["-" <> short, int.to_string(value)]) == Ok(value)
+}
+
+pub fn missing_value_with_default_test() {
+  use #(name, default) <- qcheck.given(qcheck.tuple2(
+    gen.clip_string(),
+    gen.clip_string(),
+  ))
+
+  let command =
+    clip.command(fn(a) { a })
+    |> clip.opt(opt.new(name) |> opt.default(default))
+
+  assert clip.run(command, ["--" <> name])
+    == Error("missing required arg: --" <> name)
+}
+
+pub fn missing_short_value_with_default_test() {
+  use #(name, short, default) <- qcheck.given(qcheck.tuple3(
+    gen.clip_string(),
+    gen.clip_string(),
+    gen.clip_string(),
+  ))
+
+  let command =
+    clip.command(fn(a) { a })
+    |> clip.opt(opt.new(name) |> opt.short(short) |> opt.default(default))
+
+  assert clip.run(command, ["-" <> short])
+    == Error("missing required arg: --" <> name <> ", -" <> short)
+}

@@ -1,3 +1,12 @@
+# 1.2.2
+
+* Allow `clip/opt.short` to be used with any `Opt(a)` rather than only `Opt(String)`.
+* Support `-h` and `--help` flags anywhere in the argument list before `--`.
+* Return an error when a named option is provided without a value, even if the option has a default value.
+* Do not display `(default: Error(Nil))` in help text for optional options and positional arguments.
+* Render optional positional arguments with brackets in the `Usage:` section of generated help text.
+* Fix typos in documentation.
+
 # 1.2.1
 
 * Ensure positional arguments do not consume values belonging to named options,

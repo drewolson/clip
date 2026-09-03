@@ -102,7 +102,7 @@ pub fn new(name: String) -> Opt(String) {
 ///
 /// // Ok("Drew")
 /// ```
-pub fn short(opt: Opt(String), short_name: String) -> Opt(String) {
+pub fn short(opt: Opt(a), short_name: String) -> Opt(a) {
   Opt(..opt, short: Some(short_name))
 }
 
@@ -156,6 +156,8 @@ pub fn run(
       use a <- result.try(opt.try_map(val))
       Ok(#(a, rest))
     }
+    [key], _ if key == long_name || Some(key) == short_name ->
+      Error("missing required arg: " <> names)
     [head, ..rest], _ ->
       run(opt, rest)
       |> result.map(fn(v) { #(v.0, [head, ..v.1]) })
